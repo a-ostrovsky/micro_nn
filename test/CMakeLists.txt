@@ -1,6 +1,3 @@
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Fetch GoogleTest
 message(CHECK_START "Fetching GoogleTest")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
@@ -24,6 +21,10 @@ add_executable(
   linalg_test.cpp
   layers_test.cpp
 )
+
+set_property(TARGET micro_nn_test PROPERTY CXX_STANDARD 23)
+set_property(TARGET micro_nn_test PROPERTY STANDARD_REQUIRED ON)
+
 target_link_libraries(
   micro_nn_test
   GTest::gtest_main
