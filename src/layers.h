@@ -26,30 +26,6 @@ private:
 };
 
 template <class NumT = config::kFloat>
-class Tanh {
-public:
-    constexpr micro_nn::linalg::Matrix<NumT> forward(
-        const micro_nn::linalg::Matrix<NumT>& x) {
-        auto output{x.unary_expr([](NumT x) { return std::tanh(x); })};
-        return output;
-    }
-
-    micro_nn::linalg::Matrix<NumT> backward(
-        const micro_nn::linalg::Matrix<NumT>& d_out) {
-        auto d_tanh =
-            d_out.unary_expr([](NumT x) { return tanh_derivative(x); });
-        auto d_input = d_out * d_tanh;
-        return d_input;
-    }
-
-private:
-    NumT tanh_derivative(NumT x) const {
-        NumT tanh_x = std::tanh(x);
-        return 1 - tanh_x * tanh_x;
-    }
-};
-
-template <class NumT = config::kFloat>
 class ReLU {
 public:
     constexpr micro_nn::linalg::Matrix<NumT> forward(
