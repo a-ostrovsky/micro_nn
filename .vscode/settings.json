@@ -3,6 +3,7 @@
   "cSpell.words": [
     "colwise",
     "linalg",
+    "mdspan",
     "relu",
     "rowwise"
   ],
@@ -90,6 +91,7 @@
     "xtr1common": "cpp",
     "xtree": "cpp",
     "stdfloat": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "mdspan": "cpp"
   }
 }
