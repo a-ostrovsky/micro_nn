@@ -1,3 +1,5 @@
+#pragma once
+
 namespace micro_nn {
 template <class T, class U>
 constexpr T narrow_cast(U&& u) noexcept {

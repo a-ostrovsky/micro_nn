@@ -40,10 +40,10 @@ TEST(LinearLayerTest, ForwardAndBackward) {
     EXPECT_EQ(output, expected_output);
 
     // Test backward method
-    auto [d_input, d_weights, d_bias]{linear.backward(output)};
+    auto d_input{linear.backward(output)};
     EXPECT_EQ(d_input.shape(), x.shape());
-    EXPECT_EQ(d_weights.shape(), weights.shape());
-    EXPECT_EQ(d_bias.shape(), bias.shape());
+    EXPECT_EQ(linear.weights().shape(), weights.shape());
+    EXPECT_EQ(linear.bias().shape(), bias.shape());
 }
 
 }  // namespace micro_nn::layers

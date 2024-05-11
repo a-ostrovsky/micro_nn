@@ -20,6 +20,7 @@ add_executable(
   test.cpp
   linalg_test.cpp
   layers_test.cpp
+  sequential_model_test.cpp
 )
 
 set_property(TARGET micro_nn_test PROPERTY CXX_STANDARD 23)

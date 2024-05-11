@@ -1,8 +1,18 @@
 #pragma once
+
 #include "config.h"
 #include "linalg.h"
 
 namespace micro_nn::layers {
+
+template <class T, class NumT>
+concept Layer = requires(T layer, const micro_nn::linalg::Matrix<NumT>& m) {
+    { layer.forward(m) } -> std::convertible_to<micro_nn::linalg::Matrix<NumT>>;
+    {
+        layer.backward(m)
+    } -> std::convertible_to<micro_nn::linalg::Matrix<NumT>>;
+};
+
 template <class NumT = config::kFloat>
 class Sigmoid {
 public:
@@ -53,13 +63,6 @@ private:
 };
 
 template <class NumT = config::kFloat>
-struct LinearBackwardResult {
-    micro_nn::linalg::Matrix<NumT> d_input{};
-    micro_nn::linalg::Matrix<NumT> d_weights{};
-    micro_nn::linalg::Matrix<NumT> d_bias{};
-};
-
-template <class NumT = config::kFloat>
 class Linear {
 public:
     constexpr Linear(int input_features, int output_features)
@@ -73,20 +76,26 @@ public:
         return output;
     }
 
-    constexpr LinearBackwardResult<NumT> backward(
+    constexpr micro_nn::linalg::Matrix<NumT> backward(
         const micro_nn::linalg::Matrix<NumT>& d_out) {
         auto d_weights{x_.transpose() * d_out};
         auto d_bias{d_out.rowwise_sum()};
         auto d_input{d_out * weights_.transpose()};
-        return {.d_input = std::move(d_input),
-                .d_weights = std::move(d_weights),
-                .d_bias = std::move(d_bias)};
+        return d_input;
     }
 
     constexpr void set_weights(const micro_nn::linalg::Matrix<NumT> weights,
                                const micro_nn::linalg::Matrix<NumT> bias) {
         weights_ = std::move(weights);
         bias_ = std::move(bias);
+    }
+
+    constexpr const micro_nn::linalg::Matrix<NumT>& weights() const {
+        return weights_;
+    }
+
+    constexpr const micro_nn::linalg::Matrix<NumT>& bias() const {
+        return bias_;
     }
 
 private:
