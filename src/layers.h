@@ -5,7 +5,7 @@
 
 namespace micro_nn::layers {
 
-template <class T, class NumT>
+template <class NumT, class T>
 concept Layer = requires(T layer, const micro_nn::linalg::Matrix<NumT>& m) {
     { layer.forward(m) } -> std::convertible_to<micro_nn::linalg::Matrix<NumT>>;
     {
