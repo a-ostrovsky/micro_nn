@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <cassert>
 #include <format>
 #include <mdspan>
 #include <numeric>
@@ -40,10 +42,11 @@ public:
         }
     }
 
-    constexpr static Matrix<NumT> unity(std::size_t size) {
+    constexpr static Matrix<NumT> unity(int size) {
+        assert(size >= 0 && "Size must be non-negative");
         Matrix<NumT> matrix(size, size);
         for (std::size_t i = 0; i < size; ++i) {
-            matrix.dataSpan_[i, i] = 1;
+            matrix.dataSpan_[std::array{i, i}] = 1;
         }
         return matrix;
     }
