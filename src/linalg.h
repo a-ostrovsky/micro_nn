@@ -35,9 +35,17 @@ public:
             }
 
             for (int col = 0; col < cols; ++col) {
-                data_[index(row, col)] = data[row][col];
+                dataSpan_[std::array{row, col}] = data[row][col];
             }
         }
+    }
+
+    constexpr static Matrix<NumT> unity(std::size_t size) {
+        Matrix<NumT> matrix(size, size);
+        for (std::size_t i = 0; i < size; ++i) {
+            matrix.dataSpan_[i, i] = 1;
+        }
+        return matrix;
     }
 
     constexpr Matrix operator*(const Matrix& other) const {
@@ -53,10 +61,10 @@ public:
             for (auto col{0}; col < other.cols(); ++col) {
                 NumT sum = 0;
                 for (auto k = 0; k < cols(); ++k) {
-                    sum +=
-                        data_[index(row, k)] * other.data_[other.index(k, col)];
+                    sum += dataSpan_[std::array{row, k}] *
+                           other.dataSpan_[std::array{k, col}];
                 }
-                result.data_[result.index(row, col)] = sum;
+                result.dataSpan_[std::array{row, col}] = sum;
             }
         }
         return result;
@@ -78,10 +86,11 @@ public:
         Matrix result(rows(), cols());
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.data_[index(row, col)] =
-                    data_[index(row, col)] +
-                    other.data_[other.index(std::min(row, other.rows() - 1),
-                                            std::min(col, other.cols() - 1))];
+                result.dataSpan_[std::array{row, col}] =
+                    dataSpan_[std::array{row, col}] +
+                    other
+                        .dataSpan_[std::array{std::min(row, other.rows() - 1),
+                                              std::min(col, other.cols() - 1)}];
             }
         }
         return result;
@@ -98,10 +107,11 @@ public:
         Matrix result(rows(), cols());
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.data_[index(row, col)] =
-                    data_[index(row, col)] -
-                    other.data_[other.index(std::min(row, other.rows() - 1),
-                                            std::min(col, other.cols() - 1))];
+                result.dataSpan_[std::array{row, col}] =
+                    dataSpan_[std::array{row, col}] -
+                    other
+                        .dataSpan_[std::array{std::min(row, other.rows() - 1),
+                                              std::min(col, other.cols() - 1)}];
             }
         }
         return result;
@@ -128,8 +138,9 @@ public:
         Matrix result{rows(), cols()};
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.data_[result.index(row, col)] =
-                    data_[index(row, col)] * other.data_[other.index(row, col)];
+                result.dataSpan_[std::array{row, col}] =
+                    dataSpan_[std::array{row, col}] *
+                    other.dataSpan_[std::array{row, col}];
             }
         }
         return result;
@@ -140,26 +151,33 @@ public:
         Matrix result{rows(), cols()};
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.data_[result.index(row, col)] =
-                    func(data_[index(row, col)]);
+                result.dataSpan_[std::array{row, col}] =
+                    func(dataSpan_[std::array{row, col}]);
             }
         }
         return result;
     }
 
     constexpr const auto& at(int row, int col) const {
-        return data_[index_checked(row, col)];
+        if (!is_valid_index(row, col)) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        return dataSpan_[std::array{row, col}];
     }
 
     constexpr auto& at(int row, int col) {
-        return data_[index_checked(row, col)];
+        if (!is_valid_index(row, col)) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        return dataSpan_[std::array{row, col}];
     }
 
     constexpr Matrix transpose() const {
         Matrix result(cols(), rows());
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.data_[result.index(col, row)] = data_[index(row, col)];
+                result.dataSpan_[std::array{col, row}] =
+                    dataSpan_[std::array{row, col}];
             }
         }
         return result;
@@ -168,7 +186,7 @@ public:
     constexpr Matrix<NumT> rowwise(int row) const {
         Matrix<NumT> row_data{1, cols()};
         for (int col = 0; col < cols(); ++col) {
-            row_data(0, col) = data_[index(row, col)];
+            row_data(0, col) = dataSpan_[std::array{row, col}];
         }
         return row_data;
     }
@@ -176,7 +194,7 @@ public:
     constexpr Matrix<NumT> colwise(int col) const {
         Matrix<NumT> col_data{rows(), 1};
         for (int row = 0; row < rows(); ++row) {
-            col_data(row, 0) = data_[index(row, col)];
+            col_data(row, 0) = dataSpan_[std::array{row, col}];
         }
         return col_data;
     }
@@ -191,9 +209,9 @@ public:
         for (int row = 0; row < rows(); ++row) {
             NumT sum = 0;
             for (int col = 0; col < cols(); ++col) {
-                sum += data_[index(row, col)];
+                sum += dataSpan_[std::array{row, col}];
             }
-            row_sums.data_[row_sums.index(row, 0)] = sum;
+            row_sums.dataSpan_[std::array{row, 0}] = sum;
         }
         return row_sums;
     }
@@ -203,9 +221,9 @@ public:
         for (int col = 0; col < cols(); ++col) {
             NumT sum = 0;
             for (int row = 0; row < rows(); ++row) {
-                sum += data_[index(row, col)];
+                sum += dataSpan_[std::array{row, col}];
             }
-            col_sums.data_[col_sums.index(0, col)] = sum;
+            col_sums.dataSpan_[std::array{0, col}] = sum;
         }
         return col_sums;
     }
@@ -229,13 +247,8 @@ public:
     }
 
 private:
-    constexpr int index(int row, int col) const { return row * cols() + col; }
-
-    constexpr int index_checked(int row, int col) {
-        if (row >= rows() || col >= cols()) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        return index(row, col);
+    constexpr bool is_valid_index(int row, int col) {
+        return row >= 0 && row < rows() && col >= 0 && col < cols();
     }
 
     std::vector<NumT> data_{};
