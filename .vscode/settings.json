@@ -92,6 +92,7 @@
     "xtree": "cpp",
     "stdfloat": "cpp",
     "regex": "cpp",
-    "mdspan": "cpp"
+    "mdspan": "cpp",
+    "cassert": "cpp"
   }
 }
