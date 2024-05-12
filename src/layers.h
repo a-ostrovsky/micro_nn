@@ -47,7 +47,7 @@ public:
 
     constexpr micro_nn::linalg::Matrix<NumT> backward(
         const micro_nn::linalg::Matrix<NumT>& d_out) {
-        auto ret{d_out};
+        micro_nn::linalg::Matrix<NumT> ret{d_out};
         for (auto row{0}; row < ret.rows(); ++row) {
             for (auto col{0}; col < ret.cols(); ++col) {
                 if (x_.at(row, col) <= 0) {
@@ -84,8 +84,8 @@ public:
         return d_input;
     }
 
-    constexpr void set_weights(const micro_nn::linalg::Matrix<NumT> weights,
-                               const micro_nn::linalg::Matrix<NumT> bias) {
+    constexpr void set_weights(micro_nn::linalg::Matrix<NumT> weights,
+                               micro_nn::linalg::Matrix<NumT> bias) {
         weights_ = std::move(weights);
         bias_ = std::move(bias);
     }

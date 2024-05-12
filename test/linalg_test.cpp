@@ -10,6 +10,12 @@ TEST(MatrixTest, Constructor) {
     EXPECT_EQ(m.cols(), 20);
 }
 
+TEST(MatrixTest, SetValues) {
+    auto m{Matrix<int>::zeros(1, 1)};
+    m.at(0, 0) = 10;
+    EXPECT_EQ(m.at(0, 0), 10);
+}
+
 TEST(MatrixTest, Multiplication) {
     Matrix<int> m1{{{1, 2, 3}, {4, 5, 6}}};
     Matrix<int> m2{{{7, 8}, {9, 10}, {11, 12}}};

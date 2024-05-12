@@ -45,8 +45,20 @@ public:
     constexpr static Matrix<NumT> unity(int size) {
         assert(size >= 0 && "Size must be non-negative");
         Matrix<NumT> matrix(size, size);
-        for (std::size_t i = 0; i < size; ++i) {
+        for (auto i = 0; i < size; ++i) {
             matrix.dataSpan_[std::array{i, i}] = 1;
+        }
+        return matrix;
+    }
+
+    constexpr static Matrix<NumT> zeros(int rows, int cols) {
+        assert(rows >= 0 && cols >= 0 &&
+               "Rows and columns must be non-negative");
+        Matrix<NumT> matrix(rows, cols);
+        for (auto row = 0; row < rows; ++row) {
+            for (auto col = 0; col < cols; ++col) {
+                matrix.dataSpan_[std::array{row, col}] = 0;
+            }
         }
         return matrix;
     }
@@ -161,18 +173,21 @@ public:
         return result;
     }
 
-    constexpr const auto& at(int row, int col) const {
+    constexpr const NumT& at(int row, int col) const {
         if (!is_valid_index(row, col)) {
             throw std::out_of_range("Matrix indices out of range");
         }
         return dataSpan_[std::array{row, col}];
     }
 
-    constexpr auto& at(int row, int col) {
+    constexpr NumT& at(int row, int col) {
         if (!is_valid_index(row, col)) {
             throw std::out_of_range("Matrix indices out of range");
         }
-        return dataSpan_[std::array{row, col}];
+        const auto idx{row * cols() + col};
+        return data_[idx];
+        // TODO: Why this doesn't work?
+        // return dataSpan_[std::array{row, col}];
     }
 
     constexpr Matrix transpose() const {
