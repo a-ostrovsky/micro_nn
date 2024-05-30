@@ -7,7 +7,7 @@ namespace micro_nn::loss {
 TEST(MSETest, ForwardAndBackward_NoLoss) {
     MSE<> mse;
     linalg::Matrix<> y_true{{{1.0}}};
-    auto y_pred = y_true;
+    auto y_pred{y_true};
     EXPECT_FLOAT_EQ(mse.forward(y_true, y_pred), 0.0);  // No error
 
     linalg::Matrix<> expected_grad{{{0.0}}};
