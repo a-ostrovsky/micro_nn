@@ -250,6 +250,8 @@ public:
 
     constexpr int cols() const { return dataSpan_.extent(1); }
 
+    constexpr size_t size() const { return data_.size(); }
+
     constexpr std::pair<int, int> shape() const { return {rows(), cols()}; }
 
     constexpr bool operator==(const Matrix& other) const {
@@ -265,7 +267,7 @@ public:
     }
 
 private:
-    constexpr bool is_valid_index(int row, int col) {
+    constexpr bool is_valid_index(int row, int col) const {
         return row >= 0 && row < rows() && col >= 0 && col < cols();
     }
 

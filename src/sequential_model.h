@@ -20,12 +20,32 @@ public:
                    layers_);
         return y;
     }
-    micro_nn::linalg::Matrix<NumT> backward(
+
+    constexpr micro_nn::linalg::Matrix<NumT> backward(
         const micro_nn::linalg::Matrix<NumT>& d_out) {
-        throw std::exception("not implemented");
+        micro_nn::linalg::Matrix<NumT> d_y = d_out;
+        auto reversed_layers{reverse_tuple(layers_)};
+        std::apply([&](auto&... layer) { ((d_y = layer.backward(d_y)), ...); },
+                   reversed_layers);
+        return d_y;
     }
 
 private:
+    // Inspired by:
+    // https://www.reddit.com/r/cpp/comments/gu29m9/reversing_tuples_with_c_20/
+    // Reverse the order of the tuple elements.
+    template <class Tp, class TpNoRef = std::remove_reference_t<Tp>,
+              std::size_t N = std::tuple_size<TpNoRef>::value,
+              class Seq = std::make_index_sequence<N>>
+    static constexpr auto reverse_tuple(Tp&& tp) {
+        auto impl{[&tp]<std::size_t... I>(std::index_sequence<I...>) {
+            return std::make_tuple(
+                std::get<N - 1 - I>(std::forward<Tp>(tp))...);
+        }};
+        return impl(Seq());
+        // return reverse_tuple_impl<N>(Seq(), std::forward<Tp>(tp));
+    }
+
     std::tuple<Layers...> layers_;
 };
 }  // namespace micro_nn
