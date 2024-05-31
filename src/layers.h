@@ -78,8 +78,8 @@ public:
 
     constexpr micro_nn::linalg::Matrix<NumT> backward(
         const micro_nn::linalg::Matrix<NumT>& d_out) {
-        auto d_weights{x_.transpose() * d_out};
-        auto d_bias{d_out.rowwise_sum()};
+        d_weights_ = x_.transpose() * d_out;
+        d_bias_ = d_out.rowwise_sum();
         auto d_input{d_out * weights_.transpose()};
         return d_input;
     }
@@ -98,9 +98,19 @@ public:
         return bias_;
     }
 
+    constexpr const micro_nn::linalg::Matrix<NumT>& d_weights() const {
+        return d_weights_;
+    }
+
+    constexpr const micro_nn::linalg::Matrix<NumT>& d_bias() const {
+        return d_bias_;
+    }
+
 private:
     micro_nn::linalg::Matrix<NumT> weights_{};
     micro_nn::linalg::Matrix<NumT> bias_{};
     micro_nn::linalg::Matrix<NumT> x_{};
+    micro_nn::linalg::Matrix<NumT> d_weights_{};
+    micro_nn::linalg::Matrix<NumT> d_bias_{};
 };
 }  // namespace micro_nn::layers

@@ -1,9 +1,7 @@
 #pragma once
 
-#include <array>
 #include <cassert>
 #include <format>
-#include <mdspan>
 #include <numeric>
 #include <vector>
 
@@ -13,42 +11,28 @@
 namespace micro_nn::linalg {
 template <class NumT = config::kFloat>
 class Matrix {
-    using MdSpanT = std::mdspan<
-        NumT, std::extents<int, std::dynamic_extent, std::dynamic_extent>>;
-
 public:
     constexpr Matrix() = default;
 
-    constexpr Matrix(int rows, int cols) {
+    constexpr Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
         data_.resize(rows * cols);
-        dataSpan_ = MdSpanT(data_.data(), rows, cols);
     }
 
     explicit Matrix(const std::vector<std::vector<NumT>>& data) {
-        const int rows{narrow_cast<int>(data.size())};
-        const int cols{narrow_cast<int>(data[0].size())};
-        data_.resize(rows * cols);
-        dataSpan_ = MdSpanT(data_.data(), rows, cols);
+        rows_ = narrow_cast<int>(data.size());
+        cols_ = narrow_cast<int>(data[0].size());
+        data_.resize(rows_ * cols_);
 
-        for (int row = 0; row < rows; ++row) {
-            if (data[row].size() != cols) {
+        for (int row = 0; row < rows_; ++row) {
+            if (data[row].size() != cols_) {
                 throw std::invalid_argument(
                     "All rows must have the same number of columns");
             }
 
-            for (int col = 0; col < cols; ++col) {
-                dataSpan_[std::array{row, col}] = data[row][col];
+            for (int col = 0; col < cols_; ++col) {
+                data_[index(row, col)] = data[row][col];
             }
         }
-    }
-
-    constexpr static Matrix<NumT> unity(int size) {
-        assert(size >= 0 && "Size must be non-negative");
-        Matrix<NumT> matrix(size, size);
-        for (auto i = 0; i < size; ++i) {
-            matrix.dataSpan_[std::array{i, i}] = 1;
-        }
-        return matrix;
     }
 
     constexpr static Matrix<NumT> zeros(int rows, int cols) {
@@ -57,8 +41,17 @@ public:
         Matrix<NumT> matrix(rows, cols);
         for (auto row = 0; row < rows; ++row) {
             for (auto col = 0; col < cols; ++col) {
-                matrix.dataSpan_[std::array{row, col}] = 0;
+                matrix.data_[matrix.index(row, col)] = 0;
             }
+        }
+        return matrix;
+    }
+
+    constexpr static Matrix<NumT> unity(int size) {
+        assert(size >= 0 && "Size must be non-negative");
+        Matrix<NumT> matrix(size, size);
+        for (auto i = 0; i < size; ++i) {
+            matrix.data_[matrix.index(i, i)] = 1;
         }
         return matrix;
     }
@@ -76,10 +69,10 @@ public:
             for (auto col{0}; col < other.cols(); ++col) {
                 NumT sum = 0;
                 for (auto k = 0; k < cols(); ++k) {
-                    sum += dataSpan_[std::array{row, k}] *
-                           other.dataSpan_[std::array{k, col}];
+                    sum +=
+                        data_[index(row, k)] * other.data_[other.index(k, col)];
                 }
-                result.dataSpan_[std::array{row, col}] = sum;
+                result.data_[result.index(row, col)] = sum;
             }
         }
         return result;
@@ -101,11 +94,10 @@ public:
         Matrix result(rows(), cols());
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.dataSpan_[std::array{row, col}] =
-                    dataSpan_[std::array{row, col}] +
-                    other
-                        .dataSpan_[std::array{std::min(row, other.rows() - 1),
-                                              std::min(col, other.cols() - 1)}];
+                result.data_[index(row, col)] =
+                    data_[index(row, col)] +
+                    other.data_[other.index(std::min(row, other.rows() - 1),
+                                            std::min(col, other.cols() - 1))];
             }
         }
         return result;
@@ -122,11 +114,10 @@ public:
         Matrix result(rows(), cols());
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.dataSpan_[std::array{row, col}] =
-                    dataSpan_[std::array{row, col}] -
-                    other
-                        .dataSpan_[std::array{std::min(row, other.rows() - 1),
-                                              std::min(col, other.cols() - 1)}];
+                result.data_[index(row, col)] =
+                    data_[index(row, col)] -
+                    other.data_[other.index(std::min(row, other.rows() - 1),
+                                            std::min(col, other.cols() - 1))];
             }
         }
         return result;
@@ -153,9 +144,8 @@ public:
         Matrix result{rows(), cols()};
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.dataSpan_[std::array{row, col}] =
-                    dataSpan_[std::array{row, col}] *
-                    other.dataSpan_[std::array{row, col}];
+                result.data_[result.index(row, col)] =
+                    data_[index(row, col)] * other.data_[other.index(row, col)];
             }
         }
         return result;
@@ -166,36 +156,26 @@ public:
         Matrix result{rows(), cols()};
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.dataSpan_[std::array{row, col}] =
-                    func(dataSpan_[std::array{row, col}]);
+                result.data_[result.index(row, col)] =
+                    func(data_[index(row, col)]);
             }
         }
         return result;
     }
 
     constexpr const NumT& at(int row, int col) const {
-        if (!is_valid_index(row, col)) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        return dataSpan_[std::array{row, col}];
+        return data_[index_checked(row, col)];
     }
 
     constexpr NumT& at(int row, int col) {
-        if (!is_valid_index(row, col)) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        const auto idx{row * cols() + col};
-        return data_[idx];
-        // TODO: Why this doesn't work?
-        // return dataSpan_[std::array{row, col}];
+        return data_[index_checked(row, col)];
     }
 
     constexpr Matrix transpose() const {
         Matrix result(cols(), rows());
         for (int row = 0; row < rows(); ++row) {
             for (int col = 0; col < cols(); ++col) {
-                result.dataSpan_[std::array{col, row}] =
-                    dataSpan_[std::array{row, col}];
+                result.data_[result.index(col, row)] = data_[index(row, col)];
             }
         }
         return result;
@@ -204,7 +184,7 @@ public:
     constexpr Matrix<NumT> rowwise(int row) const {
         Matrix<NumT> row_data{1, cols()};
         for (int col = 0; col < cols(); ++col) {
-            row_data(0, col) = dataSpan_[std::array{row, col}];
+            row_data(0, col) = data_[index(row, col)];
         }
         return row_data;
     }
@@ -212,7 +192,7 @@ public:
     constexpr Matrix<NumT> colwise(int col) const {
         Matrix<NumT> col_data{rows(), 1};
         for (int row = 0; row < rows(); ++row) {
-            col_data(row, 0) = dataSpan_[std::array{row, col}];
+            col_data(row, 0) = data_[index(row, col)];
         }
         return col_data;
     }
@@ -227,9 +207,9 @@ public:
         for (int row = 0; row < rows(); ++row) {
             NumT sum = 0;
             for (int col = 0; col < cols(); ++col) {
-                sum += dataSpan_[std::array{row, col}];
+                sum += data_[index(row, col)];
             }
-            row_sums.dataSpan_[std::array{row, 0}] = sum;
+            row_sums.data_[row_sums.index(row, 0)] = sum;
         }
         return row_sums;
     }
@@ -239,20 +219,20 @@ public:
         for (int col = 0; col < cols(); ++col) {
             NumT sum = 0;
             for (int row = 0; row < rows(); ++row) {
-                sum += dataSpan_[std::array{row, col}];
+                sum += data_[index(row, col)];
             }
-            col_sums.dataSpan_[std::array{0, col}] = sum;
+            col_sums.data_[col_sums.index(0, col)] = sum;
         }
         return col_sums;
     }
 
-    constexpr int rows() const { return dataSpan_.extent(0); }
+    constexpr int rows() const { return rows_; }
 
-    constexpr int cols() const { return dataSpan_.extent(1); }
-
-    constexpr size_t size() const { return data_.size(); }
+    constexpr int cols() const { return cols_; }
 
     constexpr std::pair<int, int> shape() const { return {rows(), cols()}; }
+
+    constexpr size_t size() const { return data_.size(); }
 
     constexpr bool operator==(const Matrix& other) const {
         if (rows() != other.rows() || cols() != other.cols()) {
@@ -267,11 +247,17 @@ public:
     }
 
 private:
-    constexpr bool is_valid_index(int row, int col) const {
-        return row >= 0 && row < rows() && col >= 0 && col < cols();
+    constexpr int index(int row, int col) const { return row * cols() + col; }
+
+    constexpr int index_checked(int row, int col) const {
+        if (row >= rows() || col >= cols()) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        return index(row, col);
     }
 
     std::vector<NumT> data_{};
-    MdSpanT dataSpan_{};
+    int rows_{};
+    int cols_{};
 };
 }  // namespace micro_nn::linalg
