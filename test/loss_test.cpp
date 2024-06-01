@@ -30,6 +30,23 @@ TEST(MSETest, ForwardAndBackward_SomeLoss) {
     EXPECT_FLOAT_EQ(grad.at(0, 0), expected_grad.at(0, 0));
 }
 
+TEST(CrossEntropyTest, Forward) {
+    CrossEntropy<> cross_entropy{};
+    linalg::Matrix<> y_true{{{1.0f}}};
+    linalg::Matrix<> y_pred{{{0.9f}}};
+    float expected_loss{-std::log(0.9f)};
+    EXPECT_NEAR(cross_entropy.forward(y_true, y_pred), expected_loss, 1e-6);
+}
+
+TEST(CrossEntropyTest, Backward) {
+    micro_nn::loss::CrossEntropy<float> cross_entropy{};
+    linalg::Matrix<float> y_true{{{1.0f}}};
+    linalg::Matrix<float> y_pred{{{0.9f}}};
+    linalg::Matrix<float> expected_grad{{{-0.1f}}};
+    const auto grad{cross_entropy.backward(y_true, y_pred)};
+    EXPECT_NEAR(grad.at(0, 0), expected_grad.at(0, 0), 1e-6);
+}
+
 // TODO: Probably this test should be moved out or replaced by the
 // implementation of the optimizer.
 TEST(MSETest, LinearRegressionSample) {

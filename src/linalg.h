@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <format>
@@ -134,6 +135,39 @@ public:
         return *this;
     }
 
+    constexpr Matrix operator+(NumT scalar) const {
+        return unary_expr([scalar](NumT x) { return x + scalar; });
+    }
+
+    constexpr Matrix& operator+=(NumT scalar) {
+        *this = std::move(*this + scalar);
+        return *this;
+    }
+    constexpr Matrix operator-(NumT scalar) const { return operator+(-scalar); }
+
+    constexpr Matrix& operator-=(NumT scalar) {
+        *this = std::move(*this - scalar);
+        return *this;
+    }
+
+    constexpr Matrix operator*(NumT scalar) const {
+        return unary_expr([scalar](NumT x) { return x * scalar; });
+    }
+
+    constexpr Matrix& operator*=(NumT scalar) {
+        *this = std::move(*this * scalar);
+        return *this;
+    }
+
+    constexpr Matrix operator/(NumT scalar) const {
+        return operator*(1 / scalar);
+    }
+
+    constexpr Matrix& operator/=(NumT scalar) {
+        *this = std::move(*this / scalar);
+        return *this;
+    }
+
     constexpr Matrix elementwise_multiply(const Matrix& other) const {
         if (rows() != other.rows() || cols() != other.cols()) {
             throw std::invalid_argument(
@@ -162,6 +196,10 @@ public:
             }
         }
         return result;
+    }
+
+    constexpr Matrix operator-() const {
+        return unary_expr([](NumT x) { return -x; });
     }
 
     constexpr const NumT& at(int row, int col) const {
@@ -261,4 +299,35 @@ private:
     int rows_{};
     int cols_{};
 };
+
+template <typename NumT>
+constexpr Matrix<NumT> operator+(NumT scalar, const Matrix<NumT>& matrix) {
+    return matrix + scalar;
+}
+
+template <typename NumT>
+constexpr Matrix<NumT> operator-(NumT scalar, const Matrix<NumT>& matrix) {
+    return matrix - scalar;
+}
+
+template <typename NumT>
+constexpr Matrix<NumT> operator*(NumT scalar, const Matrix<NumT>& matrix) {
+    return matrix * scalar;
+}
+
+template <typename NumT>
+constexpr Matrix<NumT> operator/(NumT scalar, const Matrix<NumT>& matrix) {
+    return matrix / scalar;
+}
+
+template <typename NumT>
+constexpr Matrix<NumT> log(const Matrix<NumT>& matrix) {
+    return matrix.unary_expr([](NumT x) { return std::log(x); });
+}
+
+template <typename NumT>
+constexpr Matrix<NumT> clamp(const Matrix<NumT>& matrix, NumT min, NumT max) {
+    return matrix.unary_expr(
+        [min, max](NumT x) { return std::clamp(x, min, max); });
+}
 }  // namespace micro_nn::linalg

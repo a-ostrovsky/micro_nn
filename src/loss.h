@@ -19,4 +19,21 @@ public:
         return (y_pred - y_true).unary_expr([](NumT x) { return 2 * x; });
     }
 };
+
+template <typename NumT = config::kFloat>
+class CrossEntropy {
+public:
+    constexpr NumT forward(const linalg::Matrix<NumT>& y_true,
+                           const linalg::Matrix<NumT>& y_pred) {
+        // 1e-15 and 1e15 are used to avoid log(0) and log(inf)
+        const auto clamped_y_pred{clamp(y_pred, 1e-15f, 1e15f)};
+        return -(y_true.elementwise_multiply(log(clamped_y_pred))).sum();
+    }
+
+    constexpr linalg::Matrix<NumT> backward(
+        const linalg::Matrix<NumT>& y_true,
+        const linalg::Matrix<NumT>& y_pred) {
+        return y_pred - y_true;
+    }
+};
 }  // namespace micro_nn::loss
