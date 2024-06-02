@@ -4,6 +4,15 @@
 
 namespace micro_nn::loss {
 
+template <class NumT, class T>
+concept Loss = requires(T loss, const linalg::Matrix<NumT>& y_true,
+                        const linalg::Matrix<NumT>& y_pred) {
+    { loss.forward(y_true, y_pred) } -> std::convertible_to<NumT>;
+    {
+        loss.backward(y_true, y_pred)
+    } -> std::convertible_to<linalg::Matrix<NumT>>;
+};
+
 template <class NumT = config::kFloat>
 class MSE {
 public:

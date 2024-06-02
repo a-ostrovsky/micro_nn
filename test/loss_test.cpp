@@ -69,11 +69,11 @@ TEST(MSETest, LinearRegressionSample) {
         auto d_out{mse.backward(y_true, y_pred)};
         input.backward(d_out);
 
-        const auto updatedWeights{
+        auto updatedWeights{
             input.weights() -
             input.d_weights().unary_expr(
                 [kLearningRate](auto x) { return kLearningRate * x; })};
-        const auto updatedBias{
+        auto updatedBias{
             input.bias() - input.d_bias().unary_expr([kLearningRate](auto x) {
                 return kLearningRate * x;
             })};

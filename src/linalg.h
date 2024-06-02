@@ -20,7 +20,7 @@ public:
         data_.resize(rows * cols);
     }
 
-    explicit Matrix(const std::vector<std::vector<NumT>>& data) {
+    constexpr explicit Matrix(const std::vector<std::vector<NumT>>& data) {
         rows_ = narrow_cast<int>(data.size());
         cols_ = narrow_cast<int>(data[0].size());
         data_.resize(rows_ * cols_);

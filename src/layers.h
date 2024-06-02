@@ -6,11 +6,9 @@
 namespace micro_nn::layers {
 
 template <class NumT, class T>
-concept Layer = requires(T layer, const micro_nn::linalg::Matrix<NumT>& m) {
-    { layer.forward(m) } -> std::convertible_to<micro_nn::linalg::Matrix<NumT>>;
-    {
-        layer.backward(m)
-    } -> std::convertible_to<micro_nn::linalg::Matrix<NumT>>;
+concept Layer = requires(T layer, const linalg::Matrix<NumT>& m) {
+    { layer.forward(m) } -> std::convertible_to<linalg::Matrix<NumT>>;
+    { layer.backward(m) } -> std::convertible_to<linalg::Matrix<NumT>>;
 };
 
 template <class NumT = config::kFloat>
@@ -22,7 +20,7 @@ public:
         return output;
     }
 
-    micro_nn::linalg::Matrix<NumT> backward(
+    constexpr micro_nn::linalg::Matrix<NumT> backward(
         const micro_nn::linalg::Matrix<NumT>& d_out) {
         auto d_sigmoid =
             d_out.unary_expr([](NumT x) { return sigmoid_derivative(x); });

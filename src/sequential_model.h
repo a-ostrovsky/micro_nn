@@ -11,7 +11,7 @@ template <class NumT = config::kFloat, class... Layers>
 class SequentialModel {
 public:
     constexpr explicit SequentialModel(Layers&&... layers)
-        : layers_{std::forward<Layers>(layers)...} {}
+        : layers_{std::move(layers)...} {}
 
     constexpr micro_nn::linalg::Matrix<NumT> forward(
         const micro_nn::linalg::Matrix<NumT>& x) {
@@ -25,25 +25,27 @@ public:
         const micro_nn::linalg::Matrix<NumT>& d_out) {
         micro_nn::linalg::Matrix<NumT> d_y = d_out;
         auto reversed_layers{reverse_tuple(layers_)};
-        std::apply([&](auto&... layer) { ((d_y = layer.backward(d_y)), ...); },
+        std::apply([&](auto&... layer) { ((d_y = layer->backward(d_y)), ...); },
                    reversed_layers);
         return d_y;
     }
 
+    auto& layers() { return layers_; }
+
 private:
     // Inspired by:
     // https://www.reddit.com/r/cpp/comments/gu29m9/reversing_tuples_with_c_20/
-    // Reverse the order of the tuple elements.
+    // Reverse the order of the tuple elements and returns pointer to the
+    // original elements.
     template <class Tp, class TpNoRef = std::remove_reference_t<Tp>,
               std::size_t N = std::tuple_size<TpNoRef>::value,
               class Seq = std::make_index_sequence<N>>
     static constexpr auto reverse_tuple(Tp&& tp) {
         auto impl{[&tp]<std::size_t... I>(std::index_sequence<I...>) {
             return std::make_tuple(
-                std::get<N - 1 - I>(std::forward<Tp>(tp))...);
+                &std::get<N - 1 - I>(std::forward<Tp>(tp))...);
         }};
         return impl(Seq());
-        // return reverse_tuple_impl<N>(Seq(), std::forward<Tp>(tp));
     }
 
     std::tuple<Layers...> layers_;
