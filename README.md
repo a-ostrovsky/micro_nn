@@ -14,6 +14,7 @@ This project is heavily work in progress and not finished yet.
 ⏳ Adam Optimizer<br/>
 ⏳ Solver<br/>
 ⏳ Data Loader<br/>
+⏳ Proper Weight Initialization (e.g. Kaiming)<br/>
 
 ## Getting Started
 ```bash
