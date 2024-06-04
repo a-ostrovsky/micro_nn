@@ -11,6 +11,15 @@ concept Layer = requires(T layer, const linalg::Matrix<NumT>& m) {
     { layer.backward(m) } -> std::convertible_to<linalg::Matrix<NumT>>;
 };
 
+template <class NumT, class T>
+concept WeightedLayer = requires(T a, const linalg::Matrix<NumT>& m) {
+    { a.d_bias() } -> std::convertible_to<linalg::Matrix<NumT>>;
+    { a.d_weights() } -> std::convertible_to<linalg::Matrix<NumT>>;
+    { a.bias() } -> std::convertible_to<linalg::Matrix<NumT>>;
+    { a.weights() } -> std::convertible_to<linalg::Matrix<NumT>>;
+    { a.set_weights(m, m) };
+};
+
 template <class NumT = config::kFloat>
 class Sigmoid {
 public:

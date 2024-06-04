@@ -21,6 +21,7 @@ add_executable(
   loss_test.cpp
   linalg_test.cpp
   layers_test.cpp
+  optimizer_test.cpp
   sequential_model_test.cpp
 )
 

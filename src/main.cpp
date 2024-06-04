@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "model.h"
-
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "This is the playground to experiment with the library!"
+              << '\n';
     return 0;
 }
