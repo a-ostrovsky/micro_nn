@@ -4,6 +4,7 @@
     "colwise",
     "linalg",
     "mdspan",
+    "Nesterov",
     "relu",
     "rowwise"
   ],

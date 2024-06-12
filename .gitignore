@@ -47,3 +47,6 @@ gtest/
 # Visual Studio Code
 .vs/
 *.code-workspace
+
+# Others
+ignore_*
