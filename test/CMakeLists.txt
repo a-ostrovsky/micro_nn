@@ -18,6 +18,7 @@ enable_testing()
 add_executable(
   micro_nn_test
   test.cpp
+  dataloader_test.cpp
   loss_test.cpp
   linalg_test.cpp
   layers_test.cpp

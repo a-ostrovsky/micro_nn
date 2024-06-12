@@ -4,16 +4,22 @@ This is an educational library for solving neural networks. It is designed to be
 
 This project is heavily work in progress and not finished yet.
 
+Should work at least with
+- *MSVC 19.40*
+- *GCC 13.2*
+- (Probably also with *Clang*, but not tested)
+
 ## Currently implemented
 
 ✅ Some Layers (Linear, ReLU, Sigmoid)<br/>
 ✅ Some Loss Functions (Cross Entropy, MSE)<br/>
 ✅ SGD Optimizer<br/>
+✅ Data Loader<br/>
 
 ## TODO
 ⏳ Adam Optimizer<br/>
 ⏳ Solver<br/>
-⏳ Data Loader<br/>
+⏳ Data Loader -> Shuffle indices<br/>
 ⏳ Proper Weight Initialization (e.g. Kaiming)<br/>
 
 ## Getting Started
