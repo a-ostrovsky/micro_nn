@@ -22,6 +22,7 @@ Should work at least with
 
 ## TODO
 ⏳ Adam Optimizer<br/>
+⏳ Improve compile speed <br/>
 ⏳ Data Loader -> Shuffle indices<br/>
 ⏳ Proper Weight Initialization (e.g., Kaiming)<br/>
 ⏳ More efficient matrix multiplication (e.g., Strassen)<br/>
