@@ -16,11 +16,15 @@ Should work at least with
 ✅ SGD Optimizer<br/>
 ✅ Data Loader<br/>
 
+## W.I.P.
+
+⏳ Solver<br/>
+
 ## TODO
 ⏳ Adam Optimizer<br/>
-⏳ Solver<br/>
 ⏳ Data Loader -> Shuffle indices<br/>
-⏳ Proper Weight Initialization (e.g. Kaiming)<br/>
+⏳ Proper Weight Initialization (e.g., Kaiming)<br/>
+⏳ More efficient matrix multiplication (e.g., Strassen)<br/>
 
 ## Getting Started
 ```bash

@@ -24,6 +24,7 @@ add_executable(
   layers_test.cpp
   optimizer_test.cpp
   sequential_model_test.cpp
+  solver_test.cpp
 )
 
 set_property(TARGET micro_nn_test PROPERTY CXX_STANDARD 23)

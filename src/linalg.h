@@ -20,6 +20,8 @@ public:
         data_.resize(rows * cols);
     }
 
+    constexpr explicit Matrix(NumT scalar) : Matrix(1, 1) { data_[0] = scalar; }
+
     constexpr explicit Matrix(const std::vector<std::vector<NumT>>& data) {
         rows_ = narrow_cast<int>(data.size());
         cols_ = narrow_cast<int>(data[0].size());
@@ -56,6 +58,34 @@ public:
             matrix.data_[matrix.index(i, i)] = 1;
         }
         return matrix;
+    }
+
+    // TODO: Use range for the input type
+    static constexpr Matrix<NumT> from_row_vectors(
+        const std::vector<Matrix<NumT>>& row_vectors) {
+        if (std::ranges::empty(row_vectors)) {
+            return Matrix<NumT>{0, 0};
+        }
+        int cols = std::ranges::begin(row_vectors)->cols();
+        int total_rows = narrow<int>(
+            std::ranges::distance(row_vectors.begin(), row_vectors.end()));
+
+        Matrix<NumT> result(total_rows, cols);
+
+        int row = 0;
+        for (auto& vec : row_vectors) {
+            if (vec.rows() != 1 || vec.cols() != cols) {
+                throw std::invalid_argument(
+                    "All row vectors must have the same number of columns and "
+                    "a single row");
+            }
+            for (auto col{0}; col < cols; ++col) {
+                result.at(row, col) = vec.at(0, col);
+            }
+            ++row;
+        }
+
+        return result;
     }
 
     constexpr Matrix operator*(const Matrix& other) const {
@@ -330,4 +360,5 @@ constexpr Matrix<NumT> clamp(const Matrix<NumT>& matrix, NumT min, NumT max) {
     return matrix.unary_expr(
         [min, max](NumT x) { return std::clamp(x, min, max); });
 }
+
 }  // namespace micro_nn::linalg

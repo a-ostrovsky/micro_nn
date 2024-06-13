@@ -99,4 +99,14 @@ TEST(MatrixTest, Sum) {
     EXPECT_EQ(m.sum(), 10);
 }
 
+TEST(MatrixTest, FromRowVectors) {
+    std::vector<Matrix<int>> row_vectors = {Matrix<int>{{{1, 2, 3}}},
+                                            Matrix<int>{{{4, 5, 6}}},
+                                            Matrix<int>{{{7, 8, 9}}}};
+
+    auto result{Matrix<int>::from_row_vectors(row_vectors)};
+    Matrix<int> expected{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}};
+    EXPECT_EQ(result, expected);
+}
+
 }  // namespace micro_nn::linalg

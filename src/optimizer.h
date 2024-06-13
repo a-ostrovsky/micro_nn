@@ -3,6 +3,12 @@
 #include "sequential_model.h"
 
 namespace micro_nn::optimizer {
+
+template <typename T>
+concept Optimizer = requires(T opt) {
+    { opt.step() };
+};
+
 template <class NumT = config::kFloat, class... Layers>
 class SGDOptimizer {
 public:
