@@ -21,6 +21,7 @@ Should work at least with
 ⏳ Solver<br/>
 
 ## TODO
+⏳ Regularization<br/>
 ⏳ Adam Optimizer<br/>
 ⏳ Improve compile speed <br/>
 ⏳ Data Loader -> Shuffle indices<br/>
