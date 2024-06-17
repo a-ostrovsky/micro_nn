@@ -9,12 +9,20 @@ concept Optimizer = requires(T opt) {
     { opt.step() };
 };
 
+template <class NumT = config::kFloat>
+struct SGDOptimizerConfig {
+    float learning_rate_{static_cast<NumT>(0.01f)};
+    float weight_decay_{static_cast<NumT>(0.0f)};
+};
+
 template <class NumT = config::kFloat, class... Layers>
 class SGDOptimizer {
 public:
     constexpr SGDOptimizer(SequentialModel<NumT, Layers...>& model,
-                           NumT learning_rate)
-        : model_(model), learning_rate_(learning_rate) {}
+                           SGDOptimizerConfig<NumT> config = {})
+        : model_(model),
+          learning_rate_(config.learning_rate_),
+          weight_decay_(config.weight_decay_) {}
 
     constexpr void step() {
         std::apply(
@@ -29,12 +37,15 @@ private:
     constexpr void apply_step(Layer& layer) {
         if constexpr (layers::WeightedLayer<NumT, Layer>) {
             layer.set_weights(
-                layer.weights() - learning_rate_ * layer.d_weights(),
+                layer.weights() -
+                    learning_rate_ *
+                        (layer.d_weights() + weight_decay_ * layer.weights()),
                 layer.bias() - learning_rate_ * layer.d_bias());
         }
     }
 
     SequentialModel<NumT, Layers...>& model_;
     NumT learning_rate_;
+    NumT weight_decay_;
 };
 }  // namespace micro_nn::optimizer

@@ -15,13 +15,9 @@ Should work at least with
 ✅ Some Loss Functions (Cross Entropy, MSE)<br/>
 ✅ SGD Optimizer<br/>
 ✅ Data Loader<br/>
-
-## W.I.P.
-
-⏳ Solver<br/>
+✅ Regularization<br/>
 
 ## TODO
-⏳ Regularization<br/>
 ⏳ Adam Optimizer<br/>
 ⏳ Improve compile speed <br/>
 ⏳ Data Loader -> Shuffle indices<br/>
