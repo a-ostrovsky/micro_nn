@@ -23,6 +23,7 @@ add_executable(
   linalg_test.cpp
   layers_test.cpp
   optimizer_test.cpp
+  rand_test.cpp
   sequential_model_test.cpp
   solver_test.cpp
 )
