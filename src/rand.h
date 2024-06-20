@@ -1,24 +1,29 @@
 #pragma once
-#include <cassert>
 #include <cstdint>
 #include <limits>
+#include <random>
 
 #include "config.h"
 
 namespace micro_nn::rand {
 
-template <typename NumT = config::kFloat>
 class SimpleLCG {
 public:
+    using result_type = std::uint32_t;
+
     explicit constexpr SimpleLCG(std::uint32_t seed = time_to_int(__TIME__))
         : state_(seed) {}
 
-    constexpr NumT next(NumT minInclusive, NumT maxExclusive) {
-        assert(minInclusive < maxExclusive && "Invalid range");
+    constexpr std::uint32_t operator()() {
         state_ = (a_ * state_ + c_) % m_;
-        return static_cast<NumT>(state_) / m_ * (maxExclusive - minInclusive) +
-               minInclusive;
+        return state_;
     }
+
+    constexpr void seed(std::uint32_t new_seed) { state_ = new_seed; }
+
+    constexpr static std::uint32_t min() { return 0; }
+
+    constexpr static std::uint32_t max() { return m_ - 1; }
 
 private:
     constexpr static std::uint32_t time_to_int(const char* time) {
@@ -39,4 +44,25 @@ private:
     static constexpr uint32_t c_{1013904223};
     static constexpr uint32_t m_{std::numeric_limits<uint32_t>::max()};
 };
+
+template <typename NumT = config::kFloat>
+class UniformRealDistribution {
+public:
+    explicit constexpr UniformRealDistribution(NumT min = 0.0, NumT max = 1.0)
+        : min_(min), max_(max) {}
+
+    template <std::uniform_random_bit_generator EngineT>
+    constexpr NumT operator()(EngineT& eng) {
+        return min_ + (max_ - min_) * eng() / eng.max();
+    }
+
+    constexpr NumT min() const { return min_; }
+
+    constexpr NumT max() const { return max_; }
+
+private:
+    NumT min_;
+    NumT max_;
+};
+
 }  // namespace micro_nn::rand
