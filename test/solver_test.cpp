@@ -14,7 +14,7 @@ TEST(SolverTest, LinearRegression) {
     auto initial_weights{linear.weights()};
     auto initial_bias{linear.bias()};
 
-    SequentialModel model{std::move(linear)};
+    model::SequentialModel model{std::move(linear)};
     optimizer::SGDOptimizer optimizer{model};
     loss::MSE<> mse{};
 
@@ -55,8 +55,8 @@ TEST(SolverTest, MultiLayerPerceptron) {
                                          {1.0f, 1.1f, 1.2f}}},
                        linalg::Matrix<>{{{0.01f, 0.02f, 0.03f, 0.04f}}});
 
-    SequentialModel model(std::move(layer1), std::move(activation1),
-                          std::move(layer2), std::move(activation2));
+    model::SequentialModel model(std::move(layer1), std::move(activation1),
+                                 std::move(layer2), std::move(activation2));
 
     optimizer::SGDOptimizer optimizer{model, {.weight_decay_ = 0.01f}};
     loss::MSE<> mse{};

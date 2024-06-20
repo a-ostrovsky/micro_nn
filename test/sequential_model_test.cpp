@@ -1,10 +1,9 @@
-#include "../src/sequential_model.h"
-
 #include <gtest/gtest.h>
 
 #include "../src/layers.h"
+#include "../src/model.h"
 
-namespace micro_nn {
+namespace micro_nn::model {
 
 TEST(SequentialModelTest, Forward) {
     layers::Linear linear{2, 2};
@@ -30,4 +29,4 @@ TEST(SequentialModelTest, Backward) {
     EXPECT_EQ(output, expected_output);
 }
 
-}  // namespace micro_nn
+}  // namespace micro_nn::model

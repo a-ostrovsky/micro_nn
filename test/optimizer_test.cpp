@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../src/sequential_model.h"
+#include "../src/model.h"
 
 namespace micro_nn::optimizer {
 
@@ -13,7 +13,7 @@ TEST(OptimizerTest, SGDOptimizer_WeightsAreUpdated) {
     auto initial_weights{linear.weights()};
     auto initial_bias{linear.bias()};
 
-    SequentialModel model{std::move(linear), layers::ReLU()};
+    model::SequentialModel model{std::move(linear), layers::ReLU()};
     optimizer::SGDOptimizer optimizer{model};
 
     model.forward(linalg::Matrix<>{{{1, -1}, {-1, 1}}});
@@ -32,7 +32,7 @@ TEST(OptimizerTest, SGDOptimizer_WeightDecayReducesWeights) {
         linear.set_weights(linalg::Matrix<>{{{1.0f}}},
                            linalg::Matrix<>{{{0.0f}}});
 
-        SequentialModel model{std::move(linear)};
+        model::SequentialModel model{std::move(linear)};
         optimizer::SGDOptimizer optimizer(model,
                                           {.weight_decay_ = weight_decay});
 

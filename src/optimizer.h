@@ -1,6 +1,6 @@
 #pragma once
 #include "config.h"
-#include "sequential_model.h"
+#include "model.h"
 
 namespace micro_nn::optimizer {
 
@@ -18,7 +18,7 @@ struct SGDOptimizerConfig {
 template <class NumT = config::kFloat, class... Layers>
 class SGDOptimizer {
 public:
-    constexpr SGDOptimizer(SequentialModel<NumT, Layers...>& model,
+    constexpr SGDOptimizer(model::SequentialModel<NumT, Layers...>& model,
                            SGDOptimizerConfig<NumT> config = {})
         : model_(model),
           learning_rate_(config.learning_rate_),
@@ -44,7 +44,7 @@ private:
         }
     }
 
-    SequentialModel<NumT, Layers...>& model_;
+    model::SequentialModel<NumT, Layers...>& model_;
     NumT learning_rate_;
     NumT weight_decay_;
 };

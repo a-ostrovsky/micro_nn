@@ -8,7 +8,7 @@
 namespace micro_nn::solver {
 template <class ModelT, class OptimizerT, class LossT, class DataLoaderT,
           class NumT>
-    requires Model<NumT, ModelT> && optimizer::Optimizer<OptimizerT> &&
+    requires model::Model<NumT, ModelT> && optimizer::Optimizer<OptimizerT> &&
              loss::Loss<NumT, LossT> && data::DataLoader<NumT, DataLoaderT>
 class Solver {
 public:
