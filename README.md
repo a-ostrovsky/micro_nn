@@ -11,17 +11,18 @@ Should work at least with
 
 ## Currently implemented
 
-✅ Some Layers (Linear, ReLU, Sigmoid)<br/>
-✅ Some Loss Functions (Cross Entropy, MSE)<br/>
-✅ SGD Optimizer<br/>
-✅ Data Loader<br/>
+✅ Some layers (Linear, ReLU, Sigmoid)<br/>
+✅ Some loss functions (Cross Entropy, MSE)<br/>
+✅ SGD optimizer<br/>
+✅ Data loader<br/>
 ✅ Regularization<br/>
+✅ Random number generation<br/>
 
 ## TODO
-⏳ Adam Optimizer<br/>
+⏳ Adam optimizer<br/>
 ⏳ Improve compile speed <br/>
 ⏳ Data Loader -> Shuffle indices<br/>
-⏳ Proper Weight Initialization (e.g., Kaiming)<br/>
+⏳ Proper weight initialization (e.g., Kaiming)<br/>
 ⏳ More efficient matrix multiplication (e.g., Strassen)<br/>
 
 ## Getting Started
