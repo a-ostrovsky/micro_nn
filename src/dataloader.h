@@ -25,9 +25,9 @@ public:
     using ElementT = NumT;
 
     // TODO: Use ranges
-    SimpleDataLoader(std::vector<linalg::Matrix<NumT>> x,
-                     std::vector<linalg::Matrix<NumT>> y,
-                     std::size_t batch_size)
+    constexpr SimpleDataLoader(std::vector<linalg::Matrix<NumT>> x,
+                               std::vector<linalg::Matrix<NumT>> y,
+                               std::size_t batch_size)
         : x_(std::move(x)),
           y_(std::move(y)),
           batch_size_(batch_size),
