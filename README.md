@@ -35,5 +35,13 @@ cmake --build .
 ctest
 ```
 
+### Running with AddressSanitizer
+
+To enable AddressSanitizer (ASAN) for detecting memory errors, use the `-DWITH_ASAN=ON` flag when configuring your project with CMake:
+
+```bash
+cmake -DWITH_ASAN=ON ..
+```
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
