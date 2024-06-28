@@ -5,6 +5,9 @@
 
 #include "config.h"
 
+// Provides utilities for compile-time random number generation. It relies on
+// the __TIME__ macro, which provides the current time at the point of
+// compilation.
 namespace micro_nn::rand {
 
 class SimpleLCG {
