@@ -30,9 +30,15 @@ TEST(SolverTest, LinearRegression) {
     data::SimpleDataLoader dataloader(std::vector{x1, x2, x3},
                                       std::vector{y1, y2, y3}, 3);
 
+    // Consistency check before training.
+    const auto y_pred_before_test{model.forward(linalg::Matrix<>{{{5.0}}})};
+    const bool y_pred_before_test_is_close{
+        std::abs(y_pred_before_test.at(0, 0) - 11.0f) < 1e-3f};
+    EXPECT_FALSE(y_pred_before_test_is_close);
+
     Solver solver{model, optimizer, mse, dataloader};
     solver.train(1'000);
-    auto y_pred = model.forward(linalg::Matrix<>{{{5.0}}});
+    auto y_pred{model.forward(linalg::Matrix<>{{{5.0}}})};
     EXPECT_NEAR(y_pred.at(0, 0), 11.0, 1e-3);  // 5*2+1
 }
 
@@ -76,7 +82,7 @@ TEST(SolverTest, MultiLayerPerceptron) {
     Solver solver{model, optimizer, mse, dataloader};
     solver.train(1'000);
 
-    auto y_pred = model.forward(linalg::Matrix<>{{{0.9f, 0.2f, 0.2f}}});
+    auto y_pred{model.forward(linalg::Matrix<>{{{0.9f, 0.2f, 0.2f}}})};
 
     EXPECT_GT(y_pred.at(0, 2), y_pred.at(0, 1));
     EXPECT_GT(y_pred.at(0, 2), y_pred.at(0, 0));

@@ -40,7 +40,7 @@ public:
         return d_y;
     }
 
-    auto& layers() { return layers_; }
+    constexpr auto& layers() { return layers_; }
 
 private:
     // Inspired by:
