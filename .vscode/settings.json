@@ -1,12 +1,19 @@
 {
   "cmake.configureOnOpen": true,
   "cSpell.words": [
+    "ASAN",
     "colwise",
+    "constexpr",
+    "ctest",
+    "DWITH",
+    "Kaiming",
     "linalg",
     "mdspan",
+    "MSVC",
     "Nesterov",
     "relu",
-    "rowwise"
+    "rowwise",
+    "Strassen"
   ],
   "files.associations": {
     "type_traits": "cpp",
