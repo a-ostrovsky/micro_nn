@@ -36,7 +36,6 @@ TEST(SolverTest, LinearRegression) {
     EXPECT_NEAR(y_pred.at(0, 0), 11.0, 1e-3);  // 5*2+1
 }
 
-namespace micro_nn::solver {
 TEST(SolverTest, MultiLayerPerceptron) {
     layers::Linear layer1{3, 4};
     layers::ReLU activation1;
@@ -82,6 +81,5 @@ TEST(SolverTest, MultiLayerPerceptron) {
     EXPECT_GT(y_pred.at(0, 2), y_pred.at(0, 1));
     EXPECT_GT(y_pred.at(0, 2), y_pred.at(0, 0));
 }
-}  // namespace micro_nn::solver
 
 }  // namespace micro_nn::solver
