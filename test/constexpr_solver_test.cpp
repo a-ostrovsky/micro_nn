@@ -12,8 +12,6 @@ using namespace micro_nn::solver;
 constexpr float create_model_and_solve(float input) {
     layers::Linear linear{1, 1};
     linear.set_weights(linalg::Matrix<>{{{0.9f}}}, linalg::Matrix<>{{{0.9f}}});
-    auto initial_weights{linear.weights()};
-    auto initial_bias{linear.bias()};
 
     model::SequentialModel model{std::move(linear)};
     optimizer::SGDOptimizer optimizer{model};
@@ -40,4 +38,4 @@ constexpr float create_model_and_solve(float input) {
 
 static_assert(micro_nn::abs(create_model_and_solve(5.0f) - 11.0f) <= 0.1,
               "solve_linear_regression() test failed!");
-}
+}  // namespace
