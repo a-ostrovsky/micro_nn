@@ -7,7 +7,7 @@ This project is heavily work in progress and not finished yet.
 Should work at least with
 - *MSVC 19.40*
 - *GCC 13.2*
-- (Probably also with *Clang*, but not tested)
+- *Clang 18.1*
 
 ## Example
 This is an example how to create and train a neural network. It shows a simple linear regression y = 2x + 1

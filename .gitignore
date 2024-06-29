@@ -10,9 +10,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps/
 build/
-build_linux/
-linux_build/
-build_win/
+build_*/
 
 # MSVC
 *.suo
