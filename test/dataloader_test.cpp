@@ -41,7 +41,7 @@ TEST(SimpleDataLoaderTest, TestShuffleIndices) {
     // Without shuffling the indices of the data, the first batch are 1, 2, 3.
     // With shuffling it is usually something else. With the fixed seed it will
     // be different.
-    ASSERT_TRUE(batch1.x.at(0, 0) != 1 && batch1.x.at(1, 0) != 2 &&
+    ASSERT_TRUE(batch1.x.at(0, 0) != 1 || batch1.x.at(1, 0) != 2 ||
                 batch1.x.at(2, 0) != 3);
 }
 
