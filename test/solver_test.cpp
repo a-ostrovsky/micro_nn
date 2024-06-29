@@ -27,8 +27,8 @@ TEST(SolverTest, LinearRegression) {
     auto y2{linalg::Matrix<>{{{5.0}}}};
     auto y3{linalg::Matrix<>{{{7.0}}}};
 
-    data::SimpleDataLoader dataloader(std::vector{x1, x2, x3},
-                                      std::vector{y1, y2, y3}, 3);
+    data::SimpleDataLoader dataloader(
+        std::vector{x1, x2, x3}, std::vector{y1, y2, y3}, {.batch_size_ = 3});
 
     // Consistency check before training.
     const auto y_pred_before_test{model.forward(linalg::Matrix<>{{{5.0}}})};
@@ -76,8 +76,8 @@ TEST(SolverTest, MultiLayerPerceptron) {
     auto y2{linalg::Matrix<>{{{1.0f, 0.0f, 0.0f}}}};
     auto y3{linalg::Matrix<>{{{0.0f, 1.0f, 0.0f}}}};
 
-    data::SimpleDataLoader dataloader(std::vector{x1, x2, x3},
-                                      std::vector{y1, y2, y3}, 3);
+    data::SimpleDataLoader dataloader(
+        std::vector{x1, x2, x3}, std::vector{y1, y2, y3}, {.batch_size_ = 3});
 
     Solver solver{model, optimizer, mse, dataloader};
     solver.train(1'000);

@@ -26,8 +26,8 @@ constexpr float create_model_and_solve(float input) {
     auto y2{linalg::Matrix<>{{{5.0}}}};
     auto y3{linalg::Matrix<>{{{7.0}}}};
 
-    data::SimpleDataLoader dataloader(std::vector{x1, x2, x3},
-                                      std::vector{y1, y2, y3}, 3);
+    data::SimpleDataLoader dataloader(
+        std::vector{x1, x2, x3}, std::vector{y1, y2, y3}, {.batch_size_ = 3});
 
     Solver solver{model, optimizer, mse, dataloader};
     solver.train(50);

@@ -1,8 +1,11 @@
 #pragma once
+#include <optional>
+#include <random>
 #include <ranges>
 
 #include "config.h"
 #include "linalg.h"
+#include "rand.h"
 #include "utils.h"
 
 namespace micro_nn::data {
@@ -19,6 +22,12 @@ concept DataLoader = requires(T a) {
     { a.reset() };
 };
 
+struct SimpleDataLoaderSettings {
+    size_t batch_size_{std::numeric_limits<std::size_t>::max()};
+    bool shuffle_indices_{false};
+    std::optional<rand::SimpleLCG::result_type> seed_{};
+};
+
 template <typename NumT = config::kFloat>
 class SimpleDataLoader {
 public:
@@ -27,20 +36,30 @@ public:
     // TODO: Use ranges
     constexpr SimpleDataLoader(std::vector<linalg::Matrix<NumT>> x,
                                std::vector<linalg::Matrix<NumT>> y,
-                               std::size_t batch_size)
+                               SimpleDataLoaderSettings settings)
         : x_(std::move(x)),
           y_(std::move(y)),
-          batch_size_(batch_size),
+          batch_size_(settings.batch_size_),
+          shuffle_indices_(settings.shuffle_indices_),
+          seed_(settings.seed_),
           current_(0) {
         if (x_.size() != y_.size()) {
             throw std::invalid_argument(
                 "x and y must have the same number of elements");
         }
+        if (shuffle_indices_) {
+            shuffle_indices(x_, y_);
+        }
     }
 
     constexpr bool has_next() const { return current_ < x_.size(); }
 
-    constexpr void reset() { current_ = 0; }
+    constexpr void reset() {
+        current_ = 0;
+        if (shuffle_indices_) {
+            shuffle_indices(x_, y_);
+        }
+    }
 
     constexpr Data<NumT> next() {
         if (!has_next()) {
@@ -60,9 +79,23 @@ public:
     }
 
 private:
+    constexpr void shuffle_indices(std::vector<linalg::Matrix<NumT>>& x,
+                                   std::vector<linalg::Matrix<NumT>>& y) {
+        assert(x.size() == y.size());
+        auto gen{rand::SimpleLCG{}};
+        auto dist{std::uniform_int_distribution<std::size_t>{0, x.size() - 1}};
+        for (auto i{x.size() - 1}; i > 0; --i) {
+            auto j{dist(gen)};
+            std::swap(x[i], x[j]);
+            std::swap(y[i], y[j]);
+        }
+    }
+
     std::vector<linalg::Matrix<NumT>> x_;
     std::vector<linalg::Matrix<NumT>> y_;
     std::size_t batch_size_;
+    bool shuffle_indices_;
+    std::optional<rand::SimpleLCG::result_type> seed_;
     std::size_t current_;
 };
 }  // namespace micro_nn::data

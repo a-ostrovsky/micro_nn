@@ -76,7 +76,6 @@ When evaluating models at compile time, ensure that the models are not too large
 ## TODO
 ⏳ Adam optimizer<br/>
 ⏳ Improve compile speed <br/>
-⏳ Data Loader -> Shuffle indices<br/>
 ⏳ Proper weight initialization (e.g., Kaiming)<br/>
 ⏳ More efficient matrix multiplication (e.g., Strassen)<br/>
 
