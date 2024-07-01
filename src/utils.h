@@ -30,4 +30,25 @@ constexpr T abs(T t) {
         return t < T{} ? -t : t;
     }
 }
+
+constexpr const float kSqrtEpsilon{1e-4f};
+
+template <class T>
+    requires std::is_arithmetic_v<std::remove_reference_t<T>>
+constexpr T sqrt(T t) {
+    if constexpr (meta::is_constexpr([&] { return std::sqrt(T{}); })) {
+        return std::sqrt(t);
+    } else {
+        if (t < T{}) {
+            return std::numeric_limits<T>::quiet_NaN();
+        }
+        auto x{t / 2};
+        // Tolerance for convergence with an empirical value.
+        const auto epsilon{narrow_cast<T>(kSqrtEpsilon)};
+        while (epsilon < abs(x * x - t)) {
+            x = (x + t / x) / 2;
+        }
+        return x;
+    }
+}
 }  // namespace micro_nn
