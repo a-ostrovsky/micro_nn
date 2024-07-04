@@ -14,6 +14,7 @@ concept Model = requires(T model, const micro_nn::linalg::Matrix<NumT>& m) {
     {
         model.backward(m)
     } -> std::convertible_to<micro_nn::linalg::Matrix<NumT>>;
+    { model.layers() };
 };
 
 template <class NumT = config::kFloat, class... Layers>

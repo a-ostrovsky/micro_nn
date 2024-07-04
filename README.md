@@ -72,11 +72,11 @@ When evaluating models at compile time, ensure that the models are not too large
 ✅ Data loader<br/>
 ✅ Regularization<br/>
 ✅ Random number generation<br/>
+✅ Weight initialization (Kaiming Normal)<br/>
 
 ## TODO
 ⏳ Adam optimizer<br/>
 ⏳ Improve compile speed <br/>
-⏳ Proper weight initialization (e.g., Kaiming)<br/>
 ⏳ More efficient matrix multiplication (e.g., Strassen)<br/>
 
 ## Getting Started

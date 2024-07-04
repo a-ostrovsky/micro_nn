@@ -217,6 +217,7 @@ public:
     }
 
     template <typename FuncT>
+        requires std::is_invocable_v<FuncT, NumT>
     constexpr Matrix unary_expr(const FuncT& func) const {
         Matrix result{rows(), cols()};
         for (int row = 0; row < rows(); ++row) {
@@ -226,6 +227,16 @@ public:
             }
         }
         return result;
+    }
+
+    template <typename FuncT>
+        requires std::is_invocable_v<FuncT, NumT>
+    constexpr void unary_expr_inplace(const FuncT& func) {
+        for (int row = 0; row < rows(); ++row) {
+            for (int col = 0; col < cols(); ++col) {
+                data_[index(row, col)] = func(data_[index(row, col)]);
+            }
+        }
     }
 
     constexpr Matrix operator-() const {
