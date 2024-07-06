@@ -82,10 +82,10 @@ private:
     constexpr void shuffle_indices(std::vector<linalg::Matrix<NumT>>& x,
                                    std::vector<linalg::Matrix<NumT>>& y) {
         assert(x.size() == y.size());
-        auto gen{rand::SimpleLCG{}};
+        auto rng{seed_ ? rand::SimpleLCG{*seed_} : rand::SimpleLCG{}};
         auto dist{std::uniform_int_distribution<std::size_t>{0, x.size() - 1}};
         for (auto i{x.size() - 1}; i > 0; --i) {
-            auto j{dist(gen)};
+            auto j{dist(rng)};
             std::swap(x[i], x[j]);
             std::swap(y[i], y[j]);
         }

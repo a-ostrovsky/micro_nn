@@ -1,5 +1,6 @@
 {
   "cmake.configureOnOpen": true,
+  "cmake.buildDirectory": "${workspaceFolder}/build_${buildType}",
   "cSpell.words": [
     "ASAN",
     "colwise",
@@ -101,6 +102,14 @@
     "stdfloat": "cpp",
     "regex": "cpp",
     "mdspan": "cpp",
-    "cassert": "cpp"
+    "cassert": "cpp",
+    "*.tcc": "cpp",
+    "cstdarg": "cpp",
+    "cwctype": "cpp",
+    "memory_resource": "cpp",
+    "string_view": "cpp",
+    "numbers": "cpp",
+    "semaphore": "cpp",
+    "cinttypes": "cpp"
   }
 }

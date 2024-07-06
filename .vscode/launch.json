@@ -5,7 +5,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(ctest) Launch",
+      "name": "(ctest, gdb) Launch",
+      "type": "cppdbg",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "program": "${cmake.testProgram}",
+      "args": [
+        "${cmake.testArgs}"
+      ],
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+    },
+    {
+      "name": "(ctest, msvc) Launch",
       "type": "cppvsdbg",
       "cwd": "${workspaceFolder}",
       "request": "launch",
@@ -13,6 +31,6 @@
       "args": [
         "${cmake.testArgs}"
       ],
-    }
+    },
   ]
 }

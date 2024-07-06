@@ -22,6 +22,8 @@ public:
         return state_;
     }
 
+    constexpr std::uint32_t get_seed() const { return state_; }
+
     constexpr void seed(std::uint32_t new_seed) { state_ = new_seed; }
 
     constexpr static std::uint32_t min() { return 0; }

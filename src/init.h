@@ -44,7 +44,7 @@ public:
         : seed_(settings.seed_) {}
 
     constexpr void init(linalg::Matrix<NumT>& matrix) {
-        rand::SimpleLCG rng{};
+        auto rng{seed_ ? rand::SimpleLCG{*seed_} : rand::SimpleLCG{}};
         const auto fan_in{matrix.cols()};
         const NumT std_dev{
             sqrt(narrow_cast<NumT>(2) / narrow_cast<NumT>(fan_in))};
