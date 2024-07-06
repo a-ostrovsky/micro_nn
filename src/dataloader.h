@@ -4,7 +4,7 @@
 #include <ranges>
 
 #include "config.h"
-#include "linalg.h"
+#include "linalg/matrix.h"
 #include "rand.h"
 #include "utils.h"
 

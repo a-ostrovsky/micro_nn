@@ -5,7 +5,7 @@
 #include <tuple>
 
 #include "config.h"
-#include "linalg.h"
+#include "linalg/matrix.h"
 #include "model.h"
 #include "rand.h"
 #include "utils.h"

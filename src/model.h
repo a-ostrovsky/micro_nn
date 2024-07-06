@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include "layers.h"
-#include "linalg.h"
+#include "linalg/matrix.h"
 
 namespace micro_nn::model {
 template <class NumT, class T>

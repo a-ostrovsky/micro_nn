@@ -1,7 +1,7 @@
 #pragma once
 
 #include "config.h"
-#include "linalg.h"
+#include "linalg/matrix.h"
 
 namespace micro_nn::layers {
 

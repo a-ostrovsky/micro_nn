@@ -22,8 +22,9 @@ add_executable(
   dataloader_test.cpp
   init_test.cpp
   loss_test.cpp
-  linalg_test.cpp
+  lu_decomp_test.cpp
   layers_test.cpp
+  matrix_test.cpp
   optimizer_test.cpp
   rand_test.cpp
   sequential_model_test.cpp

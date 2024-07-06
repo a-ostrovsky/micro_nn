@@ -7,8 +7,8 @@
 #include <numeric>
 #include <vector>
 
-#include "config.h"
-#include "utils.h"
+#include "../config.h"
+#include "../utils.h"
 
 namespace micro_nn::linalg {
 template <class NumT = config::kFloat>
@@ -51,7 +51,7 @@ public:
         return matrix;
     }
 
-    constexpr static Matrix<NumT> unity(int size) {
+    constexpr static Matrix<NumT> identity(int size) {
         assert(size >= 0 && "Size must be non-negative");
         Matrix<NumT> matrix(size, size);
         for (auto i = 0; i < size; ++i) {

@@ -8,7 +8,7 @@ namespace micro_nn::optimizer {
 
 TEST(OptimizerTest, SGDOptimizer_WeightsAreUpdated) {
     layers::Linear linear{2, 2};
-    linear.set_weights(/*weights*/ linalg::Matrix<>::unity(2),
+    linear.set_weights(/*weights*/ linalg::Matrix<>::identity(2),
                        /*bias*/ linalg::Matrix<>{{{0}, {0}}});
     auto initial_weights{linear.weights()};
     auto initial_bias{linear.bias()};
@@ -17,7 +17,7 @@ TEST(OptimizerTest, SGDOptimizer_WeightsAreUpdated) {
     optimizer::SGDOptimizer optimizer{model};
 
     model.forward(linalg::Matrix<>{{{1, -1}, {-1, 1}}});
-    model.backward(linalg::Matrix<>::unity(2));
+    model.backward(linalg::Matrix<>::identity(2));
 
     optimizer.step();
 

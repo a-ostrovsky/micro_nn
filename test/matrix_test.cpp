@@ -1,6 +1,6 @@
-#include "../src/linalg.h"
-
 #include <gtest/gtest.h>
+
+#include "../src/linalg/matrix.h"
 
 namespace micro_nn::linalg {
 
