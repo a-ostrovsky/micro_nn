@@ -73,6 +73,7 @@ When evaluating models at compile time, ensure that the models are not too large
 ✅ Regularization<br/>
 ✅ Random number generation<br/>
 ✅ Weight initialization (Kaiming Normal)<br/>
+✅ Learning Rate Scheduler (Step Decay)<br/>
 
 ## TODO
 ⏳ Adam optimizer<br/>

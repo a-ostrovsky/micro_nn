@@ -15,7 +15,7 @@ public:
     using result_type = std::uint32_t;
 
     explicit constexpr SimpleLCG(std::uint32_t seed = time_to_int(__TIME__))
-        : state_(seed) {}
+        : state_{seed} {}
 
     constexpr std::uint32_t operator()() {
         state_ = (a_ * state_ + c_) % m_;

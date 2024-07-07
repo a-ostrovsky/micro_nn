@@ -24,6 +24,7 @@ add_executable(
   loss_test.cpp
   lu_decomp_test.cpp
   layers_test.cpp
+  lr_scheduler_test.cpp
   matrix_test.cpp
   optimizer_test.cpp
   rand_test.cpp

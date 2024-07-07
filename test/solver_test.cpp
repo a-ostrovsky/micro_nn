@@ -123,6 +123,8 @@ TEST(SolverTest, LearnLinearTransformation) {
     init::init_model<>(initializer, model);
 
     optimizer::SGDOptimizer optimizer{model, {.learning_rate_ = 0.0001f}};
+    lr_scheduler::StepDecay<> lr_scheduler{
+        {.epoch_count_ = 100, .drop_factor_ = 0.5f}};
     loss::MSE<> mse{};
 
     const auto x{generate_random_train_data(num_features)};
@@ -130,7 +132,7 @@ TEST(SolverTest, LearnLinearTransformation) {
 
     data::SimpleDataLoader dataloader(x, y, {.batch_size_ = 50});
 
-    Solver solver{model, optimizer, mse, dataloader};
+    Solver solver{model, optimizer, mse, dataloader, lr_scheduler};
     solver.train(500);
 
     // Verify learning result with the test data. This is of course not good for
