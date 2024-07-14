@@ -1,4 +1,6 @@
 #pragma once
+#include <tuple>
+
 #include "config.h"
 #include "model.h"
 
