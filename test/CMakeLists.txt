@@ -20,6 +20,7 @@ add_executable(
   test.cpp
   constexpr_solver_test.cpp
   dataloader_test.cpp
+  hash_map_test.cpp
   init_test.cpp
   loss_test.cpp
   lu_decomp_test.cpp
@@ -30,6 +31,7 @@ add_executable(
   rand_test.cpp
   sequential_model_test.cpp
   solver_test.cpp
+  unique_id_test.cpp
   utils_test.cpp
 )
 
@@ -39,6 +41,7 @@ set_property(TARGET micro_nn_test PROPERTY STANDARD_REQUIRED ON)
 target_link_libraries(
   micro_nn_test
   GTest::gtest_main
+  micro_nn
 )
 
 include(GoogleTest)

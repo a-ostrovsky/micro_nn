@@ -2,13 +2,17 @@
 
 #include "config.h"
 #include "linalg/matrix.h"
+#include "unique_id.h"
 
 namespace micro_nn::layers {
+
+using LayerId = std::uint32_t;
 
 template <class NumT, class T>
 concept Layer = requires(T layer, const linalg::Matrix<NumT>& m) {
     { layer.forward(m) } -> std::convertible_to<linalg::Matrix<NumT>>;
     { layer.backward(m) } -> std::convertible_to<linalg::Matrix<NumT>>;
+    { layer.id() } -> std::convertible_to<LayerId>;
 };
 
 template <class NumT, class T>
@@ -37,9 +41,12 @@ public:
         return d_input;
     }
 
+    constexpr LayerId id() const { return id_; }
+
 private:
     constexpr static NumT sigmoid(NumT x) { return 1 / (1 + std::exp(-x)); }
     constexpr static NumT sigmoid_derivative(NumT x) { return x * (1 - x); }
+    constexpr static std::uint32_t id_{NEXT_UNIQUE_ID()};
 };
 
 template <class NumT = config::kFloat>
@@ -65,8 +72,11 @@ public:
         return ret;
     }
 
+    constexpr LayerId id() const { return id_; }
+
 private:
     micro_nn::linalg::Matrix<NumT> x_{};
+    constexpr static std::uint32_t id_{NEXT_UNIQUE_ID()};
 };
 
 template <class NumT = config::kFloat>
@@ -113,11 +123,14 @@ public:
         return d_bias_;
     }
 
+    constexpr LayerId id() const { return id_; }
+
 private:
     micro_nn::linalg::Matrix<NumT> weights_{};
     micro_nn::linalg::Matrix<NumT> bias_{};
     micro_nn::linalg::Matrix<NumT> x_{};
     micro_nn::linalg::Matrix<NumT> d_weights_{};
     micro_nn::linalg::Matrix<NumT> d_bias_{};
+    constexpr static std::uint32_t id_{NEXT_UNIQUE_ID()};
 };
 }  // namespace micro_nn::layers
