@@ -96,7 +96,7 @@ public:
     constexpr micro_nn::linalg::Matrix<NumT> backward(
         const micro_nn::linalg::Matrix<NumT>& d_out) {
         d_weights_ = x_.transpose() * d_out;
-        d_bias_ = d_out.rowwise_sum();
+        d_bias_ = d_out.colwise_sum();
         auto d_input{d_out * weights_.transpose()};
         return d_input;
     }

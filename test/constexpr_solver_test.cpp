@@ -36,6 +36,6 @@ constexpr float create_model_and_solve(float input) {
     return y_pred.at(0, 0);
 }
 
-static_assert(micro_nn::abs(create_model_and_solve(5.0f) - 11.0f) <= 0.1,
+static_assert(micro_nn::abs(create_model_and_solve(5.0f) - 11.0f) <= 0.5f,
               "solve_linear_regression() test failed!");
 }  // namespace

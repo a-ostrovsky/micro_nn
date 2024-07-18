@@ -116,43 +116,11 @@ public:
     }
 
     constexpr Matrix operator+(const Matrix& other) const {
-        if (rows() != other.rows() && other.rows() != 1 &&
-            cols() != other.cols() && other.cols() != 1) {
-            throw std::invalid_argument(
-                "Matrix dimensions do not match for addition and cannot be "
-                "broadcasted");
-        }
-
-        Matrix result(rows(), cols());
-        for (int row = 0; row < rows(); ++row) {
-            for (int col = 0; col < cols(); ++col) {
-                result.data_[index(row, col)] =
-                    data_[index(row, col)] +
-                    other.data_[other.index(std::min(row, other.rows() - 1),
-                                            std::min(col, other.cols() - 1))];
-            }
-        }
-        return result;
+        return elementwise_operation(other, std::plus<>());
     }
 
     constexpr Matrix operator-(const Matrix& other) const {
-        if (rows() != other.rows() && other.rows() != 1 &&
-            cols() != other.cols() && other.cols() != 1) {
-            throw std::invalid_argument(
-                "Matrix dimensions do not match for subtraction and cannot be "
-                "broadcasted");
-        }
-
-        Matrix result(rows(), cols());
-        for (int row = 0; row < rows(); ++row) {
-            for (int col = 0; col < cols(); ++col) {
-                result.data_[index(row, col)] =
-                    data_[index(row, col)] -
-                    other.data_[other.index(std::min(row, other.rows() - 1),
-                                            std::min(col, other.cols() - 1))];
-            }
-        }
-        return result;
+        return elementwise_operation(other, std::minus<>());
     }
 
     constexpr Matrix& operator+=(Matrix other) {
@@ -199,21 +167,7 @@ public:
     }
 
     constexpr Matrix elementwise_multiply(const Matrix& other) const {
-        if (rows() != other.rows() || cols() != other.cols()) {
-            throw std::invalid_argument(
-                std::format("Matrix dimensions do not match for "
-                            "element-wise multiplication. {}x{}<->{}x{}",
-                            rows(), cols(), other.rows(), other.cols()));
-        }
-
-        Matrix result{rows(), cols()};
-        for (int row = 0; row < rows(); ++row) {
-            for (int col = 0; col < cols(); ++col) {
-                result.data_[result.index(row, col)] =
-                    data_[index(row, col)] * other.data_[other.index(row, col)];
-            }
-        }
-        return result;
+        return elementwise_operation(other, std::multiplies<>());
     }
 
     template <typename FuncT>
@@ -327,6 +281,31 @@ public:
     }
 
 private:
+    template <typename Op>
+    constexpr Matrix elementwise_operation(const Matrix& other, Op op) const {
+        if ((rows() != other.rows() && other.rows() != 1 && rows() != 1) ||
+            (cols() != other.cols() && other.cols() != 1 && cols() != 1)) {
+            throw std::invalid_argument(
+                "Matrix dimensions do not match and cannot be broadcasted");
+        }
+
+        const auto max_rows{std::max(rows(), other.rows())};
+        const auto max_cols{std::max(cols(), other.cols())};
+        Matrix result(max_rows, max_cols);
+
+        for (int row{0}; row < max_rows; ++row) {
+            for (int col{0}; col < max_cols; ++col) {
+                const auto this_val{data_[index(std::min(row, rows() - 1),
+                                                std::min(col, cols() - 1))]};
+                const auto other_val{
+                    other.data_[other.index(std::min(row, other.rows() - 1),
+                                            std::min(col, other.cols() - 1))]};
+                result.data_[result.index(row, col)] = op(this_val, other_val);
+            }
+        }
+        return result;
+    }
+
     constexpr int index(int row, int col) const { return row * cols() + col; }
 
     constexpr int index_checked(int row, int col) const {

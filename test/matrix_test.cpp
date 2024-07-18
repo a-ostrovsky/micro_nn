@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include "../src/linalg/matrix.h"
+
+#include <gtest/gtest.h>
 
 namespace micro_nn::linalg {
 
@@ -70,9 +70,11 @@ TEST(MatrixTest, BroadcastingAddition) {
     Matrix<int> m2{{{1}, {2}}};
 
     Matrix<int> result{m1 + m2};
+    Matrix<int> result_commutative{m2 + m1};
     Matrix<int> expected{{{2, 3, 4}, {6, 7, 8}}};
 
     EXPECT_EQ(result, expected);
+    EXPECT_EQ(result_commutative, expected);
 }
 
 TEST(MatrixTest, BroadcastingSubtraction) {
@@ -81,6 +83,16 @@ TEST(MatrixTest, BroadcastingSubtraction) {
 
     Matrix<int> result{m1 - m2};
     Matrix<int> expected{{{1, 2, 3}, {4, 5, 6}}};
+
+    EXPECT_EQ(result, expected);
+}
+
+TEST(MatrixTest, BroadcastingSubtraction2) {
+    Matrix<int> m1{{{10}, {20}}};
+    Matrix<int> m2{{{2, 3, 4}, {6, 7, 8}}};
+
+    Matrix<int> result{m1 - m2};
+    Matrix<int> expected{{{8, 7, 6}, {14, 13, 12}}};
 
     EXPECT_EQ(result, expected);
 }
