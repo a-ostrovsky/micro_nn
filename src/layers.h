@@ -46,7 +46,7 @@ public:
 private:
     constexpr static NumT sigmoid(NumT x) { return 1 / (1 + std::exp(-x)); }
     constexpr static NumT sigmoid_derivative(NumT x) { return x * (1 - x); }
-    constexpr static std::uint32_t id_{NEXT_UNIQUE_ID()};
+    constexpr static std::uint32_t id_{get_next_id()};
 };
 
 template <class NumT = config::kFloat>
@@ -76,7 +76,7 @@ public:
 
 private:
     micro_nn::linalg::Matrix<NumT> x_{};
-    constexpr static std::uint32_t id_{NEXT_UNIQUE_ID()};
+    constexpr static std::uint32_t id_{get_next_id()};
 };
 
 template <class NumT = config::kFloat>
@@ -131,6 +131,6 @@ private:
     micro_nn::linalg::Matrix<NumT> x_{};
     micro_nn::linalg::Matrix<NumT> d_weights_{};
     micro_nn::linalg::Matrix<NumT> d_bias_{};
-    constexpr static std::uint32_t id_{NEXT_UNIQUE_ID()};
+    constexpr static std::uint32_t id_{get_next_id()};
 };
 }  // namespace micro_nn::layers

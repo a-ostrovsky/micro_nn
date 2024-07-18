@@ -98,5 +98,24 @@ To enable AddressSanitizer (ASAN) for detecting memory errors, use the `-DWITH_A
 cmake -DWITH_ASAN=ON ..
 ```
 
+## Interesting Aspects
+
+### Stateful Metaprogramming
+
+Inspired by [this article](https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20). This README outlines the basics. For more comprehensive details, see `unique_id.h`. Probably this is something which shouldn't be used in production. <br />
+
+We can define a method, let's call it `counted_flag` which is declared but not yet defined. It is a friend method of `Reader<N>`. Every time when a specialization for `Writer<N>` is instantiated, the method is defined. Note, that it doesn't matter where the friend method is defined. It is okay to define it in a different struct like it is done here. Now when we have instantiated, e.g., `Writer<0>` and `Writer<1>`, then the methods `counted_flag` for `Reader<0>` and for `Reader<1>` will be defined while for `Reader<2>`, `Reader<3>` etc. won't. We can check whether the method definition already exists using `requires(Reader<N> r) { counted_flag(r); }`. With this building blocks, we can create a method which searches for the first `N` for which `counted_flag(Reader<N>)` is not yet defined, define it and return the value of `N`.
+```cpp
+template <unsigned N>
+struct Reader {
+    friend auto counted_flag(Reader<N>);
+};
+template <unsigned N>
+struct Writer {
+    friend auto counted_flag(Reader<N>) {}
+    static constexpr unsigned n = N;
+};
+```
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
