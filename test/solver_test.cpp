@@ -122,7 +122,8 @@ TEST(SolverTest, LearnLinearTransformation) {
     auto initializer{init::KaimingNormal<>({.seed_ = 42})};
     init::init_model<>(initializer, model);
 
-    optimizer::SGDOptimizer optimizer{model, {.learning_rate_ = 0.0001f}};
+    optimizer::SGDOptimizer optimizer{
+        model, {.learning_rate_ = 0.0001f, .momentum_ = 0.9f}};
     lr_scheduler::StepDecay<> lr_scheduler{
         {.epoch_count_ = 100, .drop_factor_ = 0.5f}};
     loss::MSE<> mse{};
