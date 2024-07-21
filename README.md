@@ -98,7 +98,41 @@ To enable AddressSanitizer (ASAN) for detecting memory errors, use the `-DWITH_A
 cmake -DWITH_ASAN=ON ..
 ```
 
-## Interesting Aspects
+## Implemented Functionality
+
+### Simple Linear Algebra Library
+There is a simple linear algebra library implemented in the `Matrix` class template defined in `matrix.h` file. A `Matrix` can represent a 2D matrix or 1D vector. A `Matrix` supports arithmetic operations, including broadcasting for addition and subtraction. Additionally there are other operations, like transposition, applying a functor on each element or element-wise multiplication.
+
+### Layers
+This project implements Linear, ReLU and Sigmoid Layer which are defined in `layers.h`. The layers satisfy the concept `Layer` defined in the same file.
+* **Linear Layer** represents a fully connected neural network layer. It performs linear transformation of the input data. The forward pass computes $output = x \cdot weights + bias$.
+* **Sigmoid Layer** applies the sigmoid activation function to each element of the input matrix. The forward pass computes $\frac{1}{1 + e^{-x}}$.
+* **ReLU (Rectified Linear Unit) Layer** applies the ReLU activation function to each element of the input matrix. The forward pass computes $\max(0, x)$.
+
+### Sequential Model
+Only the sequential model is implemented. It represents a linear stack of layers where the output of one layer if the input to the next one.
+
+### Dataloader
+Dataloader loads the data which consists of the two vectors. The vector `x` holds the input features while the vector `y` holds the target output. The data can be partitioned in batches. Also there is support for shuffling data to avoid learning patters from order of the data.
+
+### Loss function
+Two loss functions are implemented in `loss.h`: MSE (Mean Square Error) and Cross Entropy Loss. The loss functions satisfy the `Loss` concept defined in the same file.
+* **MSE** calculates the mean squared errors between the true values and predicted values. The differences between those values are squared and added. Then the average is calculated: $MSE = \frac{1}{n} \sum_{i=1}^{n} (y_{\text{true}, i} - y_{\text{pred}, i})^2$
+* **Cross Entropy Loss** can be used for classification tasks. It is defined as $H(y_{\text{true}}, y_{\text{pred}}) = -\sum_{i} y_{\text{true}, i} \log(y_{\text{pred}, i})$
+
+### Initialization
+Kaiming Normal initialization is supported. It initializes the weights of a network with ReLU (Rectified Linear Unit) activation. This is done by setting the weights from normal distribution with mean of 0 and standard deviation of $\sqrt{\frac{2}{n}}$ where $n$ is the number of inputs to the layer. This approach helps to avoid vanishing or exploding gradients, especially if networks grow deeper.
+
+### Optimization
+This project implements the SGD (Stochastic Gradient Descent) optimizer. Following features are supported by the optimizer:
+* **Weight decay** is a regularization parameter which penalizes large weights in order to avoid overfilling. For example, in a dataset predicting house prices with features like location, size, and age, a model might overfit by only considering the size, ignoring other features. Regularization can mitigate this by penalizing the model's complexity, encouraging a more balanced use of all features.
+* **Momentum** helps to smooth out the updates and improve the convergence speed. This is done by adding a fraction of the previous update step to the current update step. When the previous update steps were updating the weights in same direction the momentum is accumulated. When the subsequent update is in a different direction, it is smoothed out. <br />
+There is a step decay learning rate scheduler implemented in `lr_scheduler.h`. It decreases the learning rate by a factor every `N` epochs. This can help to converge faster. In the beginning the learning rate will be high to allow fast convergence. After some time it goes down to prevent overshooting the minimum.
+
+### Training Solver
+The `Solver` class, defined in `solver.h` is orchestrating the training process. It iterates over the dataset the specified number of epochs. It performs the forward pass, calculates the loss, performs the backward pass to calculate the gradients and the updates models weights.
+
+## Interesting Language Aspects
 
 ### Stateful Metaprogramming
 
