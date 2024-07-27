@@ -68,7 +68,7 @@ When evaluating models at compile time, ensure that the models are not too large
 
 ✅ Some layers (Linear, ReLU, Sigmoid)<br/>
 ✅ Some loss functions (Cross Entropy, MSE)<br/>
-✅ SGD optimizer<br/>
+✅ Optimizers: SGD, Adam<br/>
 ✅ Data loader<br/>
 ✅ Regularization<br/>
 ✅ Random number generation<br/>
@@ -76,7 +76,7 @@ When evaluating models at compile time, ensure that the models are not too large
 ✅ Learning Rate Scheduler (Step Decay)<br/>
 
 ## TODO
-⏳ Adam optimizer<br/>
+⏳ L2 regularization for the Adam optimizer.
 ⏳ Improve compile speed <br/>
 ⏳ More efficient matrix multiplication (e.g., Strassen)<br/>
 

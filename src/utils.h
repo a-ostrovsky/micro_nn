@@ -42,13 +42,40 @@ constexpr T sqrt(T t) {
         if (t < T{}) {
             return std::numeric_limits<T>::quiet_NaN();
         }
-        auto x{t / 2};
+        T x{t / 2};
         // Tolerance for convergence with an empirical value.
         const auto epsilon{narrow_cast<T>(kSqrtEpsilon)};
+        T prev_x{};
         while (epsilon < abs(x * x - t)) {
+            prev_x = x;
             x = (x + t / x) / 2;
+            if (x == prev_x) {
+                break;  // Break if x does not change anymore
+            }
         }
         return x;
+    }
+}
+
+template <class T, class Exponent>
+    requires std::is_arithmetic_v<std::remove_reference_t<T>> &&
+             std::is_arithmetic_v<std::remove_reference_t<Exponent>>
+constexpr T pow(T base, Exponent exp) {
+    if constexpr (meta::is_constexpr(
+                      [&] { return std::pow(T{}, Exponent{}); })) {
+        return std::pow(base, exp);
+    } else {
+        if (exp == 0) {
+            return T{1};
+        } else if (exp < 0) {
+            return T{1} / pow(base, -exp);
+        } else {
+            T result = T{1};
+            for (Exponent i = 0; i < exp; ++i) {
+                result *= base;
+            }
+            return result;
+        }
     }
 }
 }  // namespace micro_nn

@@ -20,7 +20,7 @@ struct LinearCombinationWithWeights {
 std::vector<micro_nn::linalg::Matrix<>> generate_random_train_data(
     int features = 3, int samples = 100) {
     rand::SimpleLCG rng{42};
-    std::uniform_real_distribution<float> distribution{0.0f, 10.0f};
+    std::uniform_real_distribution<float> distribution{0.0f, 1.0f};
     std::vector<linalg::Matrix<>> test_data{};
     for (int i = 0; i < samples; ++i) {
         linalg::Matrix<> matrix{1, features};
@@ -70,13 +70,13 @@ TEST(SolverTest, LearnSimpleLinearRegression) {
     loss::MSE<> mse{};
 
     // y = x * 2 + 1
-    auto x1{linalg::Matrix<>{{{1.0}}}};
-    auto x2{linalg::Matrix<>{{{2.0}}}};
-    auto x3{linalg::Matrix<>{{{3.0}}}};
+    auto x1{linalg::Matrix<>{{{1.0f}}}};
+    auto x2{linalg::Matrix<>{{{2.0f}}}};
+    auto x3{linalg::Matrix<>{{{3.0f}}}};
 
-    auto y1{linalg::Matrix<>{{{3.0}}}};
-    auto y2{linalg::Matrix<>{{{5.0}}}};
-    auto y3{linalg::Matrix<>{{{7.0}}}};
+    auto y1{linalg::Matrix<>{{{3.0f}}}};
+    auto y2{linalg::Matrix<>{{{5.0f}}}};
+    auto y3{linalg::Matrix<>{{{7.0f}}}};
 
     data::SimpleDataLoader dataloader(
         std::vector{x1, x2, x3}, std::vector{y1, y2, y3}, {.batch_size_ = 3});
@@ -122,10 +122,12 @@ TEST(SolverTest, LearnLinearTransformation) {
     auto initializer{init::KaimingNormal<>({.seed_ = 42})};
     init::init_model<>(initializer, model);
 
-    optimizer::SGDOptimizer optimizer{
-        model, {.learning_rate_ = 0.0001f, .momentum_ = 0.9f}};
+    optimizer::AdamOptimizer optimizer{model,
+                                       {
+                                           .learning_rate_ = 0.1f,
+                                       }};
     lr_scheduler::StepDecay<> lr_scheduler{
-        {.epoch_count_ = 100, .drop_factor_ = 0.5f}};
+        {.epoch_count_ = 25, .drop_factor_ = 0.5f}};
     loss::MSE<> mse{};
 
     const auto x{generate_random_train_data(num_features)};

@@ -48,4 +48,24 @@ TEST(OptimizerTest, SGDOptimizer_WeightDecayReducesWeights) {
     EXPECT_NE(withWeightDecay, withoutWeightDecay);
 }
 
+TEST(OptimizerTest, AdamOptimizer_WeightsAreUpdated) {
+    layers::Linear linear{2, 2};
+    linear.set_weights(/*weights*/ linalg::Matrix<>::identity(2),
+                       /*bias*/ linalg::Matrix<>{{{0}, {0}}});
+    auto initial_weights{linear.weights()};
+    auto initial_bias{linear.bias()};
+
+    model::SequentialModel model{std::move(linear), layers::ReLU()};
+    optimizer::AdamOptimizer optimizer{model};
+
+    model.forward(linalg::Matrix<>{{{1, -1}, {-1, 1}}});
+    model.backward(linalg::Matrix<>::identity(2));
+
+    optimizer.step();
+
+    auto& linearInSequential{std::get<layers::Linear<>>(model.layers())};
+    EXPECT_NE(linearInSequential.weights(), initial_weights);
+    EXPECT_NE(linearInSequential.bias(), initial_bias);
+}
+
 }  // namespace micro_nn::optimizer
