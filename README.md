@@ -161,7 +161,8 @@ Two loss functions are implemented in `loss.h`: MSE (Mean Square Error) and Cros
 Kaiming Normal initialization is supported. It initializes the weights of a network with ReLU (Rectified Linear Unit) activation. This is done by setting the weights from normal distribution with mean of 0 and standard deviation of $\sqrt{\frac{2}{n}}$ where $n$ is the number of inputs to the layer. This approach helps to avoid vanishing or exploding gradients, especially if networks grow deeper.
 
 ### Optimization
-This project implements the SGD (Stochastic Gradient Descent) optimizer. Following features are supported by the optimizer:
+This project implements the SGD (Stochastic Gradient Descent) and Adam (Adaptive Moment Estimation) optimizers. Following features are supported by the optimizers:
+#### SGD
 * **Weight decay** is a regularization parameter which penalizes large weights in order to avoid overfilling. For example, in a dataset predicting house prices with features like location, size, and age, a model might overfit by only considering the size, ignoring other features. Regularization can mitigate this by penalizing the model's complexity, encouraging a more balanced use of all features.
 * **Momentum** helps to smooth out the updates and improve the convergence speed. This is done by adding a fraction of the previous update step to the current update step. When the previous update steps were updating the weights in same direction the momentum is accumulated. When the subsequent update is in a different direction, it is smoothed out. <br />
 There is a step decay learning rate scheduler implemented in `lr_scheduler.h`. It decreases the learning rate by a factor every `N` epochs. This can help to converge faster. In the beginning the learning rate will be high to allow fast convergence. After some time it goes down to prevent overshooting the minimum.
