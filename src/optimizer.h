@@ -50,10 +50,10 @@ private:
             const auto d_weights_adjusted{layer.d_weights() +
                                           weight_decay_ * layer.weights()};
             auto [weights_velocity, bias_velocity] = velocity_[layer.id()];
-            weights_velocity = momentum_ * weights_velocity +
-                               -learning_rate_ * d_weights_adjusted;
+            weights_velocity = momentum_ * weights_velocity -
+                               learning_rate_ * d_weights_adjusted;
             bias_velocity =
-                momentum_ * bias_velocity + -learning_rate_ * layer.d_bias();
+                momentum_ * bias_velocity - learning_rate_ * layer.d_bias();
             velocity_[layer.id()] = Velocities{weights_velocity, bias_velocity};
             layer.set_weights(layer.weights() + weights_velocity,
                               layer.bias() + bias_velocity);
