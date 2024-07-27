@@ -117,6 +117,24 @@ struct Writer {
 };
 ```
 
+### Checking for constexpr'ness
+Currently [std::sqrt](https://en.cppreference.com/w/cpp/numeric/math/sqrt) and [std::pow](https://en.cppreference.com/w/cpp/numeric/math/pow) are not `constexpr`. However, starting with C++26 they will be. Similarly, [std::abs](https://en.cppreference.com/w/cpp/numeric/math/abs) which will be `constexpr` in C++23. Therefore, it is useful to check whether a function is `constexpr` or not. This is implemented in `meta.h` as follows:
+```cpp
+// Implementation
+template <class FuncT, void* = FuncT{}()>
+constexpr bool is_constexpr(FuncT) { return true; }
+constexpr bool is_constexpr(...) { return false; }
+
+// Usage
+if constexpr (meta::is_constexpr([&] { return std::abs(T{}); })) {
+    return std::abs(t);
+} else {
+    return t < T{} ? -t : t;
+}
+```
+This works because, in order for a lambda to be used as a template parameter, it must be `constexpr`. If the function which was called in the lambda is not constexpr, then the `is_constexpr` function returning true cannot be called due to SFINAE (Substitution Failure Is Not An Error). Consequently, the implementation with variadic parameters, will be called returning false. 
+
+
 ## Implemented Functionality
 
 ### Simple Linear Algebra Library
