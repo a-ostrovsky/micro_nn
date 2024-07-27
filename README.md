@@ -68,7 +68,7 @@ When evaluating models at compile time, ensure that the models are not too large
 
 ✅ Some layers (Linear, ReLU, Sigmoid)<br/>
 ✅ Some loss functions (Cross Entropy, MSE)<br/>
-✅ Optimizers: SGD, Adam<br/>
+✅ Optimizers (SGD, Adam)<br/>
 ✅ Data loader<br/>
 ✅ Regularization<br/>
 ✅ Random number generation<br/>
