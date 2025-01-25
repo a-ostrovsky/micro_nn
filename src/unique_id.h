@@ -7,7 +7,7 @@
 // Inspired by
 // https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20
 // Probably a non standard compliant hack which shouldn't be used. Used only for
-// education purposes.
+// experemental purposes.
 
 namespace micro_nn {
 namespace detail_ {
