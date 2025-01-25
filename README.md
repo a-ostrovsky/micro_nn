@@ -2,7 +2,7 @@
 
 # micro_nn
 
-This is an educational library for solving neural networks. It is designed to be fully `constexpr` and hence to be runnable at compile time. The only purpose is to learn how neural networks are solved and what can be potentially `constexpr` in C++23. Probably it has no practical use.
+This is an experimental library for solving neural networks. It is designed to be fully `constexpr` and hence to be runnable at compile time. The only purpose is to learn how neural networks are solved and what can be potentially `constexpr` in C++23. Probably it has no practical use.
 
 This project is heavily work in progress and not finished yet.
 
