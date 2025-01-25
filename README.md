@@ -4,8 +4,6 @@
 
 This is an experimental library for solving neural networks. It is designed to be fully `constexpr` and hence to be runnable at compile time. The only purpose is to learn how neural networks are solved and what can be potentially `constexpr` in C++23. Probably it has no practical use.
 
-This project is heavily work in progress and not finished yet.
-
 Should work at least with
 - *MSVC 19.40*
 - *GCC 13.2*
